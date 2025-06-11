@@ -32,6 +32,18 @@ a {
     width: 100%;
 }
 
+p {
+    text-align: justify;
+}
+
+ol {
+    margin-left: 50px;
+}
+
+ul {
+    margin-left: 35px;
+}
+
 .container {
     max-width: 1152px;
 }
@@ -54,6 +66,10 @@ a {
     font-size: 35px;
     text-align: center;
     text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 23px;
 }
 
 .index-btn {
