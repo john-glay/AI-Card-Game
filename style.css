@@ -78,7 +78,7 @@ body {
     display: block;
 }
 
-.cards {
+.bg-cards {
     bottom: -200px;
     position: absolute;
 }
@@ -108,4 +108,27 @@ body {
     display: flex;
     justify-content: center;
     gap: 30px;
+}
+
+/* CARDS PAGE */
+.cards h1 {
+    font-size: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.cards .desc {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.cards img {
+    height: 500px;
+}
+
+.cards button {
+    display: block;
 }
