@@ -7,51 +7,48 @@
     <link rel="stylesheet" href="style.css">
     <title>Bato Bato Pick Card Game</title>
     <style>
-        .base {
+        .container {
             margin: 100px 0;
+        }
+
+        .base {
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="base">
-            <h1 class="title">Bato Bato Pick Card Game</h1>
-            <br>
-            <h2 class="subtitle">Rules of the Game</h2>
-            <br>
-            <p style="font-weight: 500;">Setup:</p>
-            <p>Each player is equipped with a carefully constructed deck consisting of 5 Rock cards (4 base damage), 5 Scissors cards (5 base damage), and 5 Paper cards (3 base damage). To enhance gameplay strategy, each deck also includes special Power-Up cards: 3 Fire Power-Ups, which add 2 bonus damage to a played card; 3 Thunder Power-Ups, which stun the opponent and prevent them from using any Power-Up cards in the next round; and 3 Water Power-Ups, which neutralize the effects of Fire Power-Ups and reduce incoming damage by 1. At the beginning of the game, each player's deck is shuffled, and they draw 5 random cards to form their starting hand. Each player starts with 30 health points, and the goal is to use a combination of base cards and Power-Ups to strategically attack the opponent and reduce their health to zero while managing one's own health and resources effectively.</p>
-            <br>
-            <p style="font-weight: 500;">Turn Phase:</p>
-            <ol>
-                <li>Card Selection
-                    <ul>
-                        <li>Players will choose 1 Base Card ( rock, paper, scissors ) and may attach 1 Power-Up.</li>
-                        <li>The card will be facedown and revealed simultaneously.</li>
-                    </ul>
-                </li>
-                <li>Power-Up Effects
-                    <ul>
-                        <li>Fire [ + 2 damage, but can be cancelled by water ].</li>
-                        <li>Thunder [ If your card wins, your opponent can't use power-ups next turn ].</li>
-                        <li>Water [ cancels fire and reduces damage by 1 ].</li>
-                    </ul>
-                </li>
-                <li>Determine Round Winner
-                    <ul>
-                        <li>Typical Rock, Paper, Scissors rules/logic.</li>
-                        <li>The winning card deals base damage + power-ups [ adjusted when water power-ups are used ].</li>
-                        <li>The loser will take the damage and have their health points reduced.</li>
-                    </ul>
-                </li>
-                <li>Draw Phase
-                    <ul>
-                        <li>Each player draws 1 card to replenish their hand back up to 5.</li>
-                    </ul>
-                </li>
-                <li>Repeat until one player reaches zero health points.</li>
-            </ol>
-            <button class="index-btn" style="margin-top: 35px;" onclick="window.location.href = 'index.html';">Return to Main Menu</button>
+        <div class="rules">
+            <div class="base">
+                <h1>How To Play</h1>
+                <p>Each player is equipped with a carefully constructed deck consisting of 5 Rock cards, 5 Scissors cards, and 5 Paper cards. To enhance gameplay strategy, each deck also includes special Power-Up cards: 3 Fire Power-Ups, 3 Thunder Power-Ups, and 3 Water Power-Ups. At the beginning of the game, each player's deck is shuffled, and they draw 5 random cards to form their starting hand. Each player starts with 30 health points, and the goal is to use a combination of base cards and Power-Ups to strategically attack the opponent and reduce their health to zero while managing one's own health and resources effectively.</p>
+                <h2>Turn Phase</h2>
+                <ol>
+                    <li>Card Selection
+                        <ul>
+                            <li>Players will choose 1 Base Card (rock, paper, scissors) and may attach 1 Power-Up (fire, water, thunder).</li>
+                            <li>The card will be facedown and revealed simultaneously.</li>
+                        </ul>
+                    </li>
+                    <li>Determine Round Winner
+                        <ul>
+                            <li>Typical Rock, Paper, Scissors rules/logic.</li>
+                            <li>The winning card deals base damage + power-ups.</li>
+                            <li>The loser will take the damage and have their health points reduced.</li>
+                        </ul>
+                    </li>
+                    <li>Draw New Cards
+                        <ul>
+                            <li>Each player draws 1 card to replenish their hand back up to 5.</li>
+                        </ul>
+                    </li>
+                    <li>Repeat until one player reaches zero health points.</li>
+                </ol>
+            </div>
+            <div class="buttons">
+                <a href="index.html"><button style="background: #FF6D6F;">Back</button></a>
+                <a href="cards.html"><button style="background: #FDFF6D;">Cards</button></a>    
+            </div>
         </div>
     </div>
 </body>
