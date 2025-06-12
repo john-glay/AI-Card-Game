@@ -34,7 +34,7 @@
     <div class="game-container">
         <div class="container">
             <div class="pause">
-                <button>Pause</button>
+                <button id="openPauseModalBtn">Pause</button>
             </div>
             <div class="gameplay">
                 <img src="images/ai-card.png" alt="ai-card" draggable="false">
@@ -65,5 +65,57 @@
             <p class="name">Name</p>
         </div>
     </div>
+
+    <!-- PAUSE MODAL -->
+    <div id="pauseModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h1>Pause</h1>
+            <button style="background: #6DFF74;">Resume</button>
+            <button style="background: #FDFF6D; margin: 15px 0;">Restart</button>
+            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+        </div>
+    </div>
+
+    <!-- WIN MODAL -->
+    <div id="winModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h1>Congratulations<br>You Won!!!</h1>
+            <button style="background: #6DFF74; margin-bottom: 15px;">Play Again</button>
+            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+        </div>
+    </div>
+
+    <!-- LOSE MODAL -->
+    <div id="loseModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h1>You lost :(<br>Better Luck<br>Next Time</h1>
+            <button style="background: #6DFF74; margin-bottom: 15px;">Play Again</button>
+            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+        </div>
+    </div>
+
+    <script>
+        const openBtn = document.getElementById("openPauseModalBtn");
+        const closeBtn = document.getElementById("closeModalBtn");
+        const modal = document.getElementById("pauseModal");
+
+        openBtn.onclick = () => {
+            modal.style.display = "flex";
+        };
+
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        // Close modal when clicking outside the modal content
+        window.onclick = (event) => {
+            if (event.target === modal) {
+            modal.style.display = "none";
+            }
+        };
+    </script>
 </body>
 </html>
