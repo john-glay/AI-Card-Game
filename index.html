@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="images/card-back.png">
     <link rel="stylesheet" href="style.css">
-    <title>Bato Bato Pick Card Game</title>
+    <title>Bato Bato Pick</title>
     <style>
         body {
             height: 100vh;
+            overflow: hidden;
         }
     </style>
-</head>
 <body>
     <div class="container">
-        <div class="base">
-            <h1 class="title">Bato Bato Pick Card Game</h1>
-            <div class="form">
-                <label for="name">Enter your name</label>
-                <input type="text" name="name" id="name" placeholder="Player 1">
+        <div class="menu">
+            <h1>Bato<br>Bato<br>Pick</h1>
+            <div class="base">
+                <label for="name">Please enter your name</label>
+                <input type="text" name="name" id="name">
+                <a href="gameplay.html"><button style="background: #6DFF74;">Start playing</button></a>
+                <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
+                <a href=""><button style="background: #FF6D6F;">Exit</button></a>
             </div>
-            <button class="index-btn" style="margin-bottom: 15px;">Start Playing</button>
-            <br>
-            <button class="index-btn" onclick="window.location.href = 'rules.html';">Rules of the Game</button>
         </div>
     </div>
+    <img class="cards" src="images/background.png" alt="cards">
 </body>
 </html>

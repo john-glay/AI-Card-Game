@@ -1,47 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Press+Start+2P&display=swap');
 
 * {
-    font-family: Poppins, 'Times New Roman', Times, sans-serif;
+    font-family: "Press Start 2P", system-ui;
     font-size: 18px;
     margin: 0;
     padding: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 body {
     align-items: center;
-    background: #f0f0f0;
+    background-image: linear-gradient(to bottom, #FFA049, #FF4F63);
     display: flex;
     justify-content: center;
-}
-
-label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-
-input[type=text] {
-    border-radius: 5px;
-    padding: 10px;
-    width: calc(100% - 23px);
-}
-
-a {
-    color: #000000;
-    text-decoration: none;
-    width: 100%;
-}
-
-p {
-    text-align: justify;
-}
-
-ol {
-    margin-left: 50px;
-}
-
-ul {
-    margin-left: 35px;
 }
 
 .container {
@@ -49,42 +23,51 @@ ul {
 }
 
 .base {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    padding: 35px;
+    background-image: linear-gradient(to top, #FFA049, #FF4F63);
+    border: 10px solid black;
+    border-radius: 20px;
+    padding: 30px;
 }
 
-.form {
-    margin: 25px 0 35px 0;
+/* MAIN MENU PAGE */
+.menu {
+    align-items: center;
+    display: flex;
+    gap: 40px;
+    margin-bottom: 220px;
 }
 
-.title {
-    background: linear-gradient(to right, #fc9e48, #ff4f63);
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent;
-    font-size: 35px;
-    text-align: center;
+.menu h1 {
+    font-size: 100px;
     text-transform: uppercase;
 }
 
-.subtitle {
-    font-size: 23px;
+.menu label {
+    display: block;
+    text-transform: capitalize;
 }
 
-.index-btn {
-    background-color: #ff4f63; /* For browsers that do not support gradients */
-    background-image: linear-gradient(to right, #fc9e48, #ff4f63);
-    border: 3px solid #000000;
+.menu input {
+    background: #AFB3AF;
+    border: none;
     border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
+    margin: 10px 0 30px 0;
     padding: 10px;
-    transition: ease 0.5s;
-    width: 100%;
+    width: 376px;
 }
 
-.index-btn:hover {
-    border-radius: 25px;
-    transition: ease 0.5s;
+.menu button {
+    cursor: pointer;
+    border: 2px solid black;
+    border-radius: 20px;
+    display: block;
+    margin: auto;
+    padding: 10px;
+    width: 280px;
+    text-transform: uppercase;
+}
+
+.cards {
+    bottom: -200px;
+    position: absolute;
 }
