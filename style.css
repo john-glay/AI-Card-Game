@@ -38,6 +38,7 @@ body {
 
 .container {
     max-width: 1152px;
+    margin: auto;
 }
 
 .base {
@@ -130,5 +131,137 @@ body {
 }
 
 .cards button {
+    display: block;
+}
+
+/* GAMEPLAY PAGE */
+.ai-container {
+    box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.2), 0 0px 20px 0 rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.ai-container {
+    background: #FF4F63;
+    border-bottom: 9px solid black;
+}
+
+.player-container {
+    background: #FC9E48;
+    border-top: 9px solid black;
+    width: 100%;
+}
+
+.game-container {
+    width: 100%;
+}
+
+.ai-container .container,
+.player-container .container {
+    padding: 20px;
+    position: relative;
+}
+
+.game-container .container {
+    padding: 20px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ai-container .name,
+.player-container .name {
+    font-size: 30px;
+    position: absolute;
+}
+
+.player-container .name {
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    max-width: 200px;
+    text-align: right;
+}
+
+.health-points {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 5px 0 20px 0;
+}
+
+.health-points p,
+.game-container .gameplay p {
+    font-size: 30px;
+}
+
+.progress {
+    accent-color: #FF5733;
+    width: 300px;
+    height: 30px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 5px solid black;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress::-webkit-progress-value {
+    background-color: #FF5733;
+}
+
+.progress::-webkit-progress-bar {
+    background-color: #f0f0f0;
+}
+
+.progress::-moz-progress-bar {
+    background-color: #FF5733;
+}
+
+.ai-container .card-back,
+.player-container .play-cards {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.ai-container .card-back img,
+.player-container .play-cards img,
+.game-container .gameplay img {
+    height: 153px;
+}
+
+.ai-container .ai-stack,
+.player-container .player-stack {
+    position: absolute;
+    height: 205px;
+    margin: 20px;
+}
+
+.ai-container .ai-stack {
+    top: 0;
+    right: 0;
+}
+
+.player-container .player-stack {
+    bottom: 0;
+    left: 0;
+}
+
+.player-container .play-cards button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    background: transparent;
+}
+
+.game-container .gameplay {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.game-container .actions button {
     display: block;
 }
