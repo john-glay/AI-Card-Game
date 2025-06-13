@@ -273,6 +273,22 @@ body {
     gap: 20px;
 }
 
+.button-controls {
+    display: contents;
+}
+
+.game-container .pause {
+    order: 1;
+}
+
+.gameplay {
+    order: 2;
+}
+
+.game-container .actions {
+    order: 3;
+}
+
 .game-container .actions button {
     display: block;
 }
@@ -354,6 +370,37 @@ body {
     .cards .desc {
         flex-direction: column;
     }
+
+    .game-container .pause button,
+    .game-container .actions button {
+        width: 180px;
+    }
+
+    .game-container .actions button {
+        width: 180px;
+    }
+
+    .ai-container .ai-stack,
+    .player-container .player-stack {
+        height: 180px;
+    }
+
+    .ai-container .container {
+        padding-right: 150px;
+    }
+
+    .player-container .container {
+        padding-left: 150px;
+    }
+
+    .ai-container .name,
+    .player-container .name {
+        position: static;
+        text-align: center;
+        max-width: 100%;
+        margin: 0;
+        padding: 15px 0;
+    }
 }
 
 @media (max-width: 768px) {
@@ -389,20 +436,30 @@ body {
     }
 
     /* GAMEPLAY PAGE */
-    .ai-container .name, .player-container .name {
-        font-size: 20px;
-        position: static;
-        text-align: center;
-        margin-bottom: 10px;
+    .ai-container .name,
+    .player-container .name {
+        padding: 5px 0;
+    }
+
+    .ai-container .container,
+    .player-container .container {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    .ai-container .container {
+        padding-right: 130px;
     }
 
     .player-container .container {
-        display: flex;
-        flex-direction: column-reverse;
+        padding-left: 150px;
     }
 
     .health-points {
-        margin: 10px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 10px;
     }
 
     .health-points p, .game-container .gameplay p {
@@ -418,17 +475,48 @@ body {
         flex-wrap: wrap;
     }
 
-    .ai-container .card-back img, .player-container .play-cards img, .game-container .gameplay img {
+    .ai-container .card-back img, .game-container .gameplay img {
+        height: 105px;
+    }
+
+    .player-container .play-cards img {
+        height: 125px;
+    }
+
+    .ai-container .ai-stack {
         height: 120px;
     }
 
-    .ai-container .ai-stack, .player-container .player-stack {
-        display: none;
+    .player-container .player-stack {
+        height: 150px;
     }
 
     .game-container .container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+    }
+
+    .button-controls {
+        display: flex;
         flex-direction: column;
         gap: 15px;
+        order: 1;
+    }
+
+    .game-container .pause button,
+    .game-container .actions button {
+        width: 130px;
+    }
+
+    .game-container .container .gameplay img {
+        height: 150px;
+    }
+
+    .game-container .gameplay p {
+        font-size: 24px;
     }
 
     /* MODAL */
@@ -460,11 +548,19 @@ body {
         padding: 20px;
     }
 
-    .ai-container .card-back img, .player-container .play-cards img, .game-container .gameplay img {
-        height: 90px;
+    .ai-container .card-back img, .game-container .gameplay img {
+        height: 80px;
+    }
+
+    .player-container .play-cards img {
+        height: 120px;
     }
 
     .health-points p, .game-container .gameplay p {
         font-size: 18px;
+    }
+
+    .game-container .container .gameplay img {
+        height: 140px;
     }
 }
