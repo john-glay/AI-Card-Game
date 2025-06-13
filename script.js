@@ -38,6 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedName) {
             nameInput.value = savedName;
         }
+
+        // Add real-time saving on every input change
+        nameInput.addEventListener('input', () => {
+            localStorage.setItem('playerName', nameInput.value);
+        });
     }
 
     // Handle start game button click
@@ -45,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startGameBtn.addEventListener('click', () => {
             const playerName = nameInput.value.trim();
             if (playerName) {
-                localStorage.setItem('playerName', playerName);
+                // The name is already saved by the input event listener
                 window.location.href = 'gameplay.html';
             } else {
                 const modal = document.getElementById('promptNameModal');
