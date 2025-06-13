@@ -21,10 +21,22 @@
                 <input type="text" name="name" id="name">
                 <a href="gameplay.html"><button style="background: #6DFF74;">Start playing</button></a>
                 <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
-                <a href=""><button style="background: #FF6D6F;">Exit</button></a>
+                <button data-modal-target="#exitModal" style="background: #FF6D6F;">Exit</button>
             </div>
         </div>
     </div>
+
+    <!-- EXIT MODAL -->
+    <div id="exitModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Are you sure<br>you want to exit?</h1>
+            <button id="confirmExitBtn" style="background: #FF6D6F; margin-bottom: 15px;">Yes, Exit</button>
+            <button id="cancelExitBtn" style="background: #6DFF74;">No, Stay</button>
+        </div>
+    </div>
+
     <img class="bg-cards" src="images/background.png" alt="cards" draggable="false">
+    <script src="script.js" defer></script>
 </body>
 </html>
