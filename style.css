@@ -321,3 +321,150 @@ body {
     cursor: pointer;
     font-family: "Poppins", sans-serif;
 }
+
+/* RESPONSIVE LAYOUT */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 992px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        max-width: 768px;
+    }
+
+    /* MAIN MENU */
+    .menu {
+        flex-direction: column;
+        margin-bottom: 80px;
+        text-align: center;
+    }
+
+    .menu h1 {
+        font-size: 80px;
+    }
+
+    .bg-cards {
+        width: 100%;
+        bottom: -140px;
+    }
+
+    /* CARDS PAGE */
+    .cards .desc {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    * {
+        font-size: 16px;
+    }
+
+    .container {
+        max-width: 576px;
+    }
+
+    /* MAIN MENU */
+    .menu h1 {
+        font-size: 60px;
+    }
+
+    .menu input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* RULES PAGE */
+    .rules h1, .cards h1 {
+        font-size: 24px;
+    }
+
+    .rules h2 {
+        font-size: 18px;
+    }
+
+    .bg-cards {
+        bottom: -80px;
+    }
+
+    /* GAMEPLAY PAGE */
+    .ai-container .name, .player-container .name {
+        font-size: 20px;
+        position: static;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .player-container .container {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .health-points {
+        margin: 10px 0;
+    }
+
+    .health-points p, .game-container .gameplay p {
+        font-size: 20px;
+    }
+
+    .progress {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ai-container .card-back, .player-container .play-cards {
+        flex-wrap: wrap;
+    }
+
+    .ai-container .card-back img, .player-container .play-cards img, .game-container .gameplay img {
+        height: 120px;
+    }
+
+    .ai-container .ai-stack, .player-container .player-stack {
+        display: none;
+    }
+
+    .game-container .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* MODAL */
+    .modal-content {
+        width: 80%;
+        padding: 30px 20px;
+    }
+
+    .modal-content h1 {
+        font-size: 24px;
+    }
+
+    .modal-content button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+     /* MAIN MENU */
+    .menu h1 {
+        font-size: 40px;
+    }
+
+    .bg-cards {
+        bottom: -40px;
+    }
+
+    .base {
+        padding: 20px;
+    }
+
+    .ai-container .card-back img, .player-container .play-cards img, .game-container .gameplay img {
+        height: 90px;
+    }
+
+    .health-points p, .game-container .gameplay p {
+        font-size: 18px;
+    }
+}
