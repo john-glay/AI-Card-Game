@@ -19,7 +19,7 @@
             <div class="base">
                 <label for="name">Please enter your name</label>
                 <input type="text" name="name" id="name">
-                <a href="gameplay.html"><button style="background: #6DFF74;">Start playing</button></a>
+                <button id="startGameBtn" style="background: #6DFF74;">Start playing</button>
                 <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
                 <button data-modal-target="#exitModal" style="background: #FF6D6F;">Exit</button>
             </div>
@@ -33,6 +33,15 @@
             <h1>Are you sure<br>you want to exit?</h1>
             <button id="confirmExitBtn" style="background: #FF6D6F; margin-bottom: 15px;">Yes, Exit</button>
             <button id="cancelExitBtn" style="background: #6DFF74;">No, Stay</button>
+        </div>
+    </div>
+
+    <!-- PROMPT NAME MODAL -->
+    <div id="promptNameModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Please enter<br>your name to start!</h1>
+            <button class="close-btn" style="background: #6DFF74;">OK</button>
         </div>
     </div>
 
