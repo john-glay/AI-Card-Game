@@ -228,6 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateSelectedCards = (card, cardContainer, index) => {
             if (isMoveConfirmed) return; // Lock selections after confirmation
 
+            if (game.player.isStunned && card.type === 'power') {
+                return;
+            }
+
             const cardType = card.type;
             const currentSelectionIndex = selectedCards[cardType];
 
@@ -702,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playAgainBtns = document.querySelectorAll('#winModal button[style*="#6DFF74"], #loseModal button[style*="#6DFF74"]');
         playAgainBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                localStorage.removeItem('gameState');
                 location.reload();
             });
         });
