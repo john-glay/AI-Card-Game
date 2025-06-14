@@ -969,7 +969,7 @@ input:checked + .slider:before {
     padding: 15px;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 7;
+    z-index: 10;
     text-align: center;
     display: none;
 }
@@ -1046,6 +1046,10 @@ body.dark-mode .modal-content {
 
 body.dark-mode .modal-content h1, 
 body.dark-mode .modal-content label {
+    color: #E0E0E0;
+}
+
+body.dark-mode .modal-content p {
     color: #E0E0E0;
 }
 
@@ -1357,6 +1361,10 @@ body.dark-mode .modal-content label {
     color: #E0E0E0;
 }
 
+body.dark-mode .modal-content p {
+    color: #E0E0E0;
+}
+
 body.dark-mode .close.close-btn {
     color: #E0E0E0;
 }
@@ -1483,6 +1491,61 @@ body.dark-mode #reshuffle-message {
 
 .animate-flip {
     animation: card-flip 0.4s ease-in-out;
+}
+
+/* --- Round Result Animations --- */
+@keyframes card-win-glow {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 10px #fff, 0 0 20px #6DFF74, 0 0 30px #6DFF74;
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 20px #fff, 0 0 40px #6DFF74, 0 0 60px #6DFF74;
+    }
+    100% {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px #fff, 0 0 30px #6DFF74, 0 0 45px #6DFF74;
+    }
+}
+
+@keyframes card-lose-fade-player {
+    to {
+        transform: scale(0.8) translateX(20px);
+        opacity: 0.4;
+        filter: grayscale(80%);
+    }
+}
+
+@keyframes card-lose-fade-ai {
+    to {
+        transform: scale(0.8) translateX(-20px);
+        opacity: 0.4;
+        filter: grayscale(80%);
+    }
+}
+
+@keyframes card-tie-shake {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-8px) rotate(-3deg); }
+    75% { transform: translateX(8px) rotate(3deg); }
+}
+
+.animate-win {
+    animation: card-win-glow 0.8s ease-in-out forwards;
+    z-index: 9;
+}
+
+.animate-lose-player {
+    animation: card-lose-fade-player 0.8s ease-in-out forwards;
+}
+
+.animate-lose-ai {
+    animation: card-lose-fade-ai 0.8s ease-in-out forwards;
+}
+
+.animate-tie {
+    animation: card-tie-shake 0.6s ease-in-out 2;
 }
 
 /* Responsive Clash Text - Overrides */

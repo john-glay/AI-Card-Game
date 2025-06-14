@@ -110,22 +110,35 @@ class Game {
             target.reshuffleReason = 'Deck Empty';
         }
 
-        if (target.deck.length > 0) {
-            let card;
-            if (forceBase) {
-                const baseCardIndex = target.deck.findIndex(c => c.type === cardTypes.BASE);
+        if (forceBase) {
+            let baseCardIndex = target.deck.findIndex(c => c.type === cardTypes.BASE);
+            if (baseCardIndex !== -1) {
+                const card = target.deck.splice(baseCardIndex, 1)[0];
+                target.hand.push(card);
+                return card;
+            } else if (target.discard.some(c => c.type === cardTypes.BASE)) {
+                // If a base card exists in the discard pile, reshuffle everything to get it
+                target.deck.push(...target.discard);
+                target.discard = [];
+                target.deck = this._shuffle(target.deck);
+                target.reshuffled = true;
+                target.reshuffleReason = 'Unplayable Hand'; // A reshuffle was forced to find a base card
+
+                baseCardIndex = target.deck.findIndex(c => c.type === cardTypes.BASE);
                 if (baseCardIndex !== -1) {
-                    card = target.deck.splice(baseCardIndex, 1)[0];
-                } else {
-                     card = target.deck.pop(); // No base card available, draw normally
+                    const card = target.deck.splice(baseCardIndex, 1)[0];
+                    target.hand.push(card);
+                    return card;
                 }
-            } else {
-                 card = target.deck.pop();
             }
-            target.hand.push(card);
-            return card;
         }
-        return null;
+
+        // Default draw if not forcing, or if force failed (no base cards left)
+        const card = target.deck.pop();
+        if (card) {
+            target.hand.push(card);
+        }
+        return card;
     }
 
     // --- GAMEPLAY & TURN LOGIC ---
@@ -168,13 +181,15 @@ class Game {
         this.ai.reshuffleReason = null;
 
         const playerDrawAmount = 5 - this.player.hand.length;
-        const aiDrawAmount = 5 - this.ai.hand.length;
-
         for (let i = 0; i < playerDrawAmount; i++) {
-            this._drawCard(this.player);
+            const needsGuaranteedBase = !this.player.hand.some(c => c.type === cardTypes.BASE) && this.player.hand.length === 4;
+            this._drawCard(this.player, needsGuaranteedBase);
         }
+        
+        const aiDrawAmount = 5 - this.ai.hand.length;
         for (let i = 0; i < aiDrawAmount; i++) {
-            this._drawCard(this.ai);
+            const needsGuaranteedBase = !this.ai.hand.some(c => c.type === cardTypes.BASE) && this.ai.hand.length === 4;
+            this._drawCard(this.ai, needsGuaranteedBase);
         }
 
         this._ensurePlayableHand(this.player);

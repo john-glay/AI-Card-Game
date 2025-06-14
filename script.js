@@ -80,8 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedStateJSON) {
             const savedState = JSON.parse(savedStateJSON);
             game = new Game(playerName, savedState);
-            // Once loaded, the saved game should be cleared to prevent accidental reloading
-            localStorage.removeItem('gameState'); 
         } else {
             game = new Game(playerName);
         }
@@ -106,14 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        const dealInitialCards = async () => {
+        const dealInitialCards = async (gameInstance) => {
             // Disable buttons during deal
             playButton.disabled = true;
             combineButton.disabled = true;
 
             const playerDeckCountEl = document.getElementById('player-deck-count');
             const aiDeckCountEl = document.getElementById('ai-deck-count');
-            const totalCards = 24; // Cards in initial deck
+            
+            // Calculate starting deck counts separately for player and AI
+            const playerStartingDeckCount = gameInstance.player.deck.length + gameInstance.player.hand.length;
+            const aiStartingDeckCount = gameInstance.ai.deck.length + gameInstance.ai.hand.length;
+
+            playerDeckCountEl.textContent = playerStartingDeckCount;
+            aiDeckCountEl.textContent = aiStartingDeckCount;
 
             const aiHandContainer = document.querySelector('.ai-container .card-back');
             const row1 = document.createElement('div');
@@ -127,10 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
             playerHandContainer.appendChild(row1);
             playerHandContainer.appendChild(row2);
 
-            // Deal cards one by one
-            for (let i = 0; i < 5; i++) {
+            const handSize = gameInstance.player.hand.length;
+            for (let i = 0; i < handSize; i++) {
                 // AI card
-                if (game.ai.hand[i]) {
+                if (gameInstance.ai.hand[i]) {
                     const aiCardImg = document.createElement('img');
                     aiCardImg.src = 'images/card-back.png';
                     aiCardImg.alt = 'card-back';
@@ -139,46 +143,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Player card
-                if (game.player.hand[i]) {
-                    const card = game.player.hand[i];
-                    const index = i;
-
-                    const cardContainer = document.createElement('div');
-                    cardContainer.classList.add('player-card-container', 'card-dealt');
-                    cardContainer.dataset.cardIndex = index;
-
-                    const cardButton = document.createElement('button');
-                    cardButton.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
-
-                    const infoButton = document.createElement('button');
-                    infoButton.classList.add('info-button');
-                    infoButton.textContent = 'Info';
-
-                    cardContainer.appendChild(cardButton);
-                    cardContainer.appendChild(infoButton);
-
-                    cardButton.addEventListener('click', () => updateSelectedCards(card, cardContainer, index));
-                    infoButton.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showCardInfo(card);
-                    });
-
-                    if (index < 2) {
+                if (gameInstance.player.hand[i]) {
+                    const card = gameInstance.player.hand[i];
+                    const cardContainer = createPlayerCardElement(card, i, gameInstance.player.isStunned);
+                    cardContainer.classList.add('card-dealt');
+                    if (i < 2) {
                         row1.appendChild(cardContainer);
                     } else {
                         row2.appendChild(cardContainer);
                     }
                 }
                 
-                await sleep(150); // Stagger the dealing of each card
+                await sleep(150);
                 
-                // Decrement deck count after card is "dealt"
-                const newDeckCount = totalCards - (i + 1);
-                playerDeckCountEl.textContent = newDeckCount;
-                aiDeckCountEl.textContent = newDeckCount;
+                // Decrement deck counts visually and independently
+                const newPlayerDeckCount = playerStartingDeckCount - (i + 1);
+                if (newPlayerDeckCount >= 0) {
+                    playerDeckCountEl.textContent = newPlayerDeckCount;
+                }
+                
+                const newAiDeckCount = aiStartingDeckCount - (i + 1);
+                 if (newAiDeckCount >= 0) {
+                    aiDeckCountEl.textContent = newAiDeckCount;
+                }
             }
             
-            // Re-enable buttons
+            // Final sync to ensure counts are perfect
+            playerDeckCountEl.textContent = gameInstance.player.deck.length;
+            aiDeckCountEl.textContent = gameInstance.ai.deck.length;
+
             updateButtonStates();
         };
 
@@ -350,34 +343,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     clashText.classList.remove('clash-text-pop');
                     void clashText.offsetWidth;
                     clashText.classList.add('clash-text-pop');
+
+                    if (clashWords[i] === "PICK") {
+                        aiCardSlot.classList.remove('animate-clash-ai');
+                        
+                        aiCardSlot.classList.add('animate-flip');
+                        setTimeout(() => {
+                            const aiImageSrc = turnData.aiMove.power 
+                                ? `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` 
+                                : turnData.aiMove.base.image;
+                            aiCardSlot.src = aiImageSrc;
+                        }, 200);
+
+                        aiCardSlot.addEventListener('animationend', () => {
+                            aiCardSlot.classList.remove('animate-flip');
+                        }, { once: true });
+                    }
                 }, i * 400);
             }
             
-            await sleep(1400);
+            await sleep(400); // Allow flip animation to finish
+            
+            await sleep(1000); // Add a delay to see the cards
 
             clashText.classList.remove('clash-text-pop');
             playerCardSlot.classList.remove('animate-clash-player');
-            aiCardSlot.classList.remove('animate-clash-ai');
 
-            aiCardSlot.classList.add('animate-flip');
-            setTimeout(() => {
-                const aiImageSrc = turnData.aiMove.power 
-                    ? `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` 
-                    : turnData.aiMove.base.image;
-                aiCardSlot.src = aiImageSrc;
-            }, 200);
+            await sleep(1000); // Pause to see the cards before the result animation
 
-            aiCardSlot.addEventListener('animationend', () => {
-                aiCardSlot.classList.remove('animate-flip');
-            }, { once: true });
+            // --- Round Result Animation ---
+            const { winner } = turnData.result;
+            if (winner === 'player') {
+                playerCardSlot.classList.add('animate-win');
+                aiCardSlot.classList.add('animate-lose-ai');
+            } else if (winner === 'ai') {
+                aiCardSlot.classList.add('animate-win');
+                playerCardSlot.classList.add('animate-lose-player');
+            } else { // tie
+                playerCardSlot.classList.add('animate-tie');
+                aiCardSlot.classList.add('animate-tie');
+            }
 
-            await sleep(400);
-            await sleep(1500);
+            await sleep(1600); // Wait for the result animation to play
 
             battleFocusOverlay.style.display = 'block';
             gameContainer.classList.add('highlighted');
             
-            const { winner, playerDamage, aiDamage } = turnData.result;
+            const { playerDamage, aiDamage } = turnData.result;
             const damageDealt = winner === 'player' ? playerDamage : aiDamage;
             let message = winner === 'tie' ? "It's a tie!" : `${winner === 'player' ? game.playerName : 'AI'} wins and deals ${damageDealt} damage!`;
             
@@ -402,6 +414,10 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedCards = { base: null, power: null };
             aiCardSlot.src = 'images/ai-card.png';
             playerCardSlot.src = 'images/player-card.png';
+            
+            // Remove animation classes from cards
+            playerCardSlot.classList.remove('animate-win', 'animate-lose-player', 'animate-tie');
+            aiCardSlot.classList.remove('animate-win', 'animate-lose-ai', 'animate-tie');
             
             combineButton.textContent = 'Combine';
             combineButton.style.background = '#FDFF6D';
@@ -446,6 +462,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 playerHandContainer.querySelectorAll('button').forEach(btn => btn.disabled = false);
                 updateButtonStates();
+
+                // Auto-save the game state after a turn is complete
+                if (!game.isGameOver) {
+                    localStorage.setItem('gameState', JSON.stringify(game.getGameState()));
+                }
             }
             isActionInProgress = false;
         };
@@ -616,25 +637,20 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonStates();
         };
 
-        const initialRender = () => {
-             // Render non-hand UI elements first
-            document.querySelector('.player-container .name').textContent = game.playerName;
-            document.getElementById('ai-hp-text').textContent = game.ai.hp;
-            document.getElementById('ai-hp-progress').value = game.ai.hp;
-            document.getElementById('player-hp-text').textContent = game.player.hp;
-            document.getElementById('player-hp-progress').value = game.player.hp;
+        const setupStaticUI = (gameInstance) => {
+            document.querySelector('.player-container .name').textContent = gameInstance.playerName;
+            document.getElementById('ai-hp-text').textContent = gameInstance.ai.hp;
+            document.getElementById('ai-hp-progress').value = gameInstance.ai.hp;
+            document.getElementById('player-hp-text').textContent = gameInstance.player.hp;
+            document.getElementById('player-hp-progress').value = gameInstance.player.hp;
             document.getElementById('ai-hp-progress').max = 30;
             document.getElementById('player-hp-progress').max = 30;
-            
-            const totalCards = 24;
-            document.getElementById('ai-deck-count').textContent = totalCards;
-            document.getElementById('player-deck-count').textContent = totalCards;
+        };
 
-            // Then animate the cards
-            dealInitialCards();
-        }
+        // --- GAME START SEQUENCE ---
+        setupStaticUI(game);
+        dealInitialCards(game);
 
-        initialRender();
         playButton.addEventListener('click', handlePlayTurn);
         combineButton.addEventListener('click', handleCombineUndoClick);
 
