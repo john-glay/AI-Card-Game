@@ -98,6 +98,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+        const dealInitialCards = async () => {
+            // Disable buttons during deal
+            playButton.disabled = true;
+            combineButton.disabled = true;
+
+            const aiHandContainer = document.querySelector('.ai-container .card-back');
+            const row1 = document.createElement('div');
+            row1.classList.add('card-row');
+            const row2 = document.createElement('div');
+            row2.classList.add('card-row');
+
+            // Clear containers
+            aiHandContainer.innerHTML = '';
+            playerHandContainer.innerHTML = '';
+            playerHandContainer.appendChild(row1);
+            playerHandContainer.appendChild(row2);
+
+            // Deal cards one by one
+            for (let i = 0; i < 5; i++) {
+                // AI card
+                if (game.ai.hand[i]) {
+                    const aiCardImg = document.createElement('img');
+                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.alt = 'card-back';
+                    aiCardImg.classList.add('card-dealt');
+                    aiHandContainer.appendChild(aiCardImg);
+                }
+
+                // Player card
+                if (game.player.hand[i]) {
+                    const card = game.player.hand[i];
+                    const index = i;
+
+                    const cardContainer = document.createElement('div');
+                    cardContainer.classList.add('player-card-container', 'card-dealt');
+                    cardContainer.dataset.cardIndex = index;
+
+                    const cardButton = document.createElement('button');
+                    cardButton.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
+
+                    const infoButton = document.createElement('button');
+                    infoButton.classList.add('info-button');
+                    infoButton.textContent = 'Info';
+
+                    cardContainer.appendChild(cardButton);
+                    cardContainer.appendChild(infoButton);
+
+                    cardButton.addEventListener('click', () => updateSelectedCards(card, cardContainer, index));
+                    infoButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showCardInfo(card);
+                    });
+
+                    if (index < 2) {
+                        row1.appendChild(cardContainer);
+                    } else {
+                        row2.appendChild(cardContainer);
+                    }
+                }
+                
+                await sleep(150); // Stagger the dealing of each card
+            }
+            
+            // Re-enable buttons
+            updateButtonStates();
+        };
+
+        const animateHealthUpdate = async (target, damage) => {
+            if (damage <= 0) return;
+
+            const hpContainer = target === 'player' ? 
+                document.querySelector('.player-container .health-points') : 
+                document.querySelector('.ai-container .health-points');
+
+            const hpText = target === 'player' ? document.getElementById('player-hp-text') : document.getElementById('ai-hp-text');
+            const hpProgress = target === 'player' ? document.getElementById('player-hp-progress') : document.getElementById('ai-hp-progress');
+            
+            if (hpContainer) {
+                const newHp = target === 'player' ? game.player.hp : game.ai.hp;
+
+                // Update the values
+                hpText.textContent = newHp;
+                hpProgress.value = newHp;
+
+                // Trigger animation
+                hpContainer.classList.add('hp-damage');
+
+                // Wait for animation to finish
+                await sleep(600); 
+
+                // Clean up
+                hpContainer.classList.remove('hp-damage');
+                hpText.style.transform = ''; // Reset transform
+                hpText.style.color = ''; // Reset color
+            }
+        };
+
         // --- BUTTON STATE LOGIC ---
         const updateButtonStates = () => {
             const hasBase = selectedCards.base !== null;
@@ -147,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- UNDO LOGIC ---
                 isMoveConfirmed = false;
                 playerCardSlot.src = 'images/player-card.png';
+                playerCardSlot.classList.remove('animate-reveal');
                 renderUI(game); // Easiest way to re-enable hand and listeners
                 
                 // Restore selection visuals after re-render
@@ -175,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const combinedImageSrc = `images/${baseCard.name.toLowerCase()}-${powerCard.name.toLowerCase()}.png`;
                 playerCardSlot.src = combinedImageSrc;
+                playerCardSlot.classList.add('animate-reveal');
 
                 playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
                     if (!container.classList.contains('selected')) {
@@ -207,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!isMoveConfirmed) {
                  isMoveConfirmed = true;
                  playerCardSlot.src = baseCard.image;
+                 playerCardSlot.classList.add('animate-reveal');
                  playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
                     if (!container.classList.contains('selected')) {
                         container.querySelector('button').disabled = true;
@@ -223,26 +323,37 @@ document.addEventListener('DOMContentLoaded', () => {
             aiCardSlot.src = turnData.aiMove.power ? 
                 `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` :
                 turnData.aiMove.base.image;
+            aiCardSlot.classList.add('animate-reveal');
 
             await sleep(500);
+
+            // Clash animation
+            playerCardSlot.classList.add('animate-clash');
+            aiCardSlot.classList.add('animate-clash');
+            
+            await sleep(600); // Wait for clash to be visually impactful
 
             // --- BATTLE FOCUS EFFECT START ---
             battleFocusOverlay.style.display = 'block';
             gameContainer.classList.add('highlighted');
 
-            await sleep(1000);
-
+            // Show result message first
             let message = turnData.result.winner === 'tie' ? "It's a tie!" : 
                 `${turnData.result.winner === 'player' ? game.playerName : 'AI'} wins and deals ${turnData.result.damageDealt} damage!`;
             
-            if (turnData.result.damageDealt > 0) {
-                // Assuming playSfx(audio.damage) is called elsewhere in the code
-            }
-
             roundResultMsg.textContent = message;
             roundResultMsg.style.display = 'block';
 
-            await sleep(2500);
+            await sleep(1500); // Let user read the message
+
+            // Animate health update after showing the message
+            if (turnData.result.winner === 'player') {
+                await animateHealthUpdate('ai', turnData.result.damageDealt);
+            } else if (turnData.result.winner === 'ai') {
+                await animateHealthUpdate('player', turnData.result.damageDealt);
+            }
+            
+            await sleep(1000); // Wait after health drop
 
             // --- BATTLE FOCUS EFFECT END ---
             roundResultMsg.style.display = 'none';
@@ -253,6 +364,8 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedCards = { base: null, power: null };
             aiCardSlot.src = 'images/ai-card.png';
             playerCardSlot.src = 'images/player-card.png';
+            playerCardSlot.classList.remove('animate-reveal', 'animate-clash');
+            aiCardSlot.classList.remove('animate-reveal', 'animate-clash');
             
             // Reset combine button state after turn
             combineButton.textContent = 'Combine';
@@ -310,6 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('ai-hp-progress').value = gameInstance.ai.hp;
             document.getElementById('player-hp-text').textContent = gameInstance.player.hp;
             document.getElementById('player-hp-progress').value = gameInstance.player.hp;
+            document.getElementById('ai-hp-progress').max = 30; // Ensure max is set
+            document.getElementById('player-hp-progress').max = 30; // Ensure max is set
 
             // Render deck counts
             document.getElementById('ai-deck-count').textContent = gameInstance.ai.deck.length;
@@ -372,7 +487,23 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonStates();
         };
 
-        renderUI(game);
+        const initialRender = () => {
+             // Render non-hand UI elements first
+            document.querySelector('.player-container .name').textContent = game.playerName;
+            document.getElementById('ai-hp-text').textContent = game.ai.hp;
+            document.getElementById('ai-hp-progress').value = game.ai.hp;
+            document.getElementById('player-hp-text').textContent = game.player.hp;
+            document.getElementById('player-hp-progress').value = game.player.hp;
+            document.getElementById('ai-hp-progress').max = 30;
+            document.getElementById('player-hp-progress').max = 30;
+            document.getElementById('ai-deck-count').textContent = game.ai.deck.length;
+            document.getElementById('player-deck-count').textContent = game.player.deck.length;
+
+            // Then animate the cards
+            dealInitialCards();
+        }
+
+        initialRender();
         playButton.addEventListener('click', handlePlayTurn);
         combineButton.addEventListener('click', handleCombineUndoClick);
 
