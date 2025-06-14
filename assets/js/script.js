@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // AI card
                 if (gameInstance.ai.hand[i]) {
                     const aiCardImg = document.createElement('img');
-                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.src = '../assets/images/card-back.png';
                     aiCardImg.alt = 'card-back';
                     aiCardImg.classList.add('card-dealt');
                     aiHandContainer.appendChild(aiCardImg);
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isMoveConfirmed) {
                 // --- UNDO LOGIC ---
                 isMoveConfirmed = false;
-                playerCardSlot.src = 'images/player-card.png';
+                playerCardSlot.src = '../assets/images/player-card.png';
                 playerCardSlot.classList.remove('animate-reveal');
                 
                 playerHandContainer.querySelectorAll('button').forEach(btn => btn.disabled = false);
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 isMoveConfirmed = true;
 
-                const combinedImageSrc = `images/${baseCard.name.toLowerCase()}-${powerCard.name.toLowerCase()}.png`;
+                const combinedImageSrc = `../assets/images/${baseCard.name.toLowerCase()}-${powerCard.name.toLowerCase()}.png`;
                 playerCardSlot.src = combinedImageSrc;
                 playerCardSlot.classList.add('animate-reveal');
 
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerCardSlot.src = playerMove.base.image;
                 playerCardSlot.classList.add('animate-reveal');
             }
-            aiCardSlot.src = 'images/card-back.png';
+            aiCardSlot.src = '../assets/images/card-back.png';
             aiCardSlot.classList.add('animate-reveal');
             
             await sleep(400);
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         aiCardSlot.classList.add('animate-flip');
                         setTimeout(() => {
                             const aiImageSrc = turnData.aiMove.power 
-                                ? `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` 
+                                ? `../assets/images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` 
                                 : turnData.aiMove.base.image;
                             aiCardSlot.src = aiImageSrc;
                         }, 200);
@@ -415,8 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             isMoveConfirmed = false;
             selectedCards = { base: null, power: null };
-            aiCardSlot.src = 'images/ai-card.png';
-            playerCardSlot.src = 'images/player-card.png';
+            aiCardSlot.src = '../assets/images/ai-card.png';
+            playerCardSlot.src = '../assets/images/player-card.png';
             
             // Remove animation classes from cards
             playerCardSlot.classList.remove('animate-win', 'animate-lose-player', 'animate-tie');
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     await sleep(150);
                     aiDeckCountEl.textContent = 24 - (i + 1);
                     const aiCardImg = document.createElement('img');
-                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.src = '../assets/images/card-back.png';
                     aiCardImg.alt = 'card-back';
                     aiCardImg.classList.add('card-dealt');
                     aiHandContainer.appendChild(aiCardImg);
@@ -578,13 +578,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const oldAiCardCount = 5 - aiDrawCount;
                 for (let i = 0; i < oldAiCardCount; i++) {
-                    aiHandContainer.innerHTML += `<img src="images/card-back.png" alt="card-back">`;
+                    aiHandContainer.innerHTML += `<img src="../assets/images/card-back.png" alt="card-back">`;
                 }
                 for (let i = 0; i < aiDrawCount; i++) {
                     await sleep(200);
                     aiDeckCountEl.textContent = parseInt(aiDeckCountEl.textContent) - 1;
                     const aiCardImg = document.createElement('img');
-                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.src = '../assets/images/card-back.png';
                     aiCardImg.alt = 'card-back';
                     aiCardImg.classList.add('card-dealt');
                     aiHandContainer.appendChild(aiCardImg);
@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const aiHandContainer = document.querySelector('.ai-container .card-back');
             aiHandContainer.innerHTML = '';
             gameInstance.ai.hand.forEach(() => {
-                aiHandContainer.innerHTML += `<img src="images/card-back.png" alt="card-back">`;
+                aiHandContainer.innerHTML += `<img src="../assets/images/card-back.png" alt="card-back">`;
             });
 
             // Render player hand
@@ -674,11 +674,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
                     // Redirect after a delay
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = '../index.html';
                     }, 2000);
                 } else {
                     // If no turns have been played, just go back to the menu without saving.
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 }
             });
         }
@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('gameState')) {
                 openModal(document.getElementById('continueGameModal'));
             } else {
-                window.location.href = 'gameplay.html';
+                window.location.href = 'pages/gameplay.html';
             }
         });
     }
@@ -797,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newGameBtn) {
         newGameBtn.addEventListener('click', () => {
             localStorage.removeItem('gameState');
-            window.location.href = 'gameplay.html';
+            window.location.href = 'pages/gameplay.html';
         });
     }
 

@@ -6,15 +6,15 @@ const cardTypes = {
 };
 
 const baseCards = {
-    ROCK: { name: 'Rock', type: cardTypes.BASE, damage: 4, image: 'images/rock.png', description: 'Deals 4 damage. Wins against Scissors.' },
-    PAPER: { name: 'Paper', type: cardTypes.BASE, damage: 3, image: 'images/paper.png', description: 'Deals 3 damage. Wins against Rock.' },
-    SCISSORS: { name: 'Scissors', type: cardTypes.BASE, damage: 5, image: 'images/scissors.png', description: 'Deals 5 damage. Wins against Paper.' }
+    ROCK: { name: 'Rock', type: cardTypes.BASE, damage: 4, image: '../assets/images/rock.png', description: 'Deals 4 damage. Wins against Scissors.' },
+    PAPER: { name: 'Paper', type: cardTypes.BASE, damage: 3, image: '../assets/images/paper.png', description: 'Deals 3 damage. Wins against Rock.' },
+    SCISSORS: { name: 'Scissors', type: cardTypes.BASE, damage: 5, image: '../assets/images/scissors.png', description: 'Deals 5 damage. Wins against Paper.' }
 };
 
 const powerUps = {
-    FIRE: { name: 'Fire', type: cardTypes.POWER, effect: 'damage', value: 2, image: 'images/fire.png', description: 'Adds +2 damage to your attack.' },
-    WATER: { name: 'Water', type: cardTypes.POWER, effect: 'defense', value: 1, image: 'images/water.png', description: 'Reduces incoming damage by 1 and cancels opponent\'s Fire power-up.' },
-    THUNDER: { name: 'Thunder', type: cardTypes.POWER, effect: 'stun', value: null, image: 'images/thunder.png', description: 'If you win the round, your opponent cannot use a Power-Up on their next turn.' }
+    FIRE: { name: 'Fire', type: cardTypes.POWER, effect: 'damage', value: 2, image: '../assets/images/fire.png', description: 'Adds +2 damage to your attack.' },
+    WATER: { name: 'Water', type: cardTypes.POWER, effect: 'defense', value: 1, image: '../assets/images/water.png', description: 'Reduces incoming damage by 1 and cancels opponent\'s Fire power-up.' },
+    THUNDER: { name: 'Thunder', type: cardTypes.POWER, effect: 'stun', value: null, image: '../assets/images/thunder.png', description: 'If you win the round, your opponent cannot use a Power-Up on their next turn.' }
 };
 
 const initialDeckConfig = [

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="images/card-back.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/card-back.png">
+    <link rel="stylesheet" href="assets/css/style.css">
     <title>Bato Bato Pick</title>
     <style>
         body {
@@ -20,7 +20,7 @@
                 <label for="name">Please enter your name</label>
                 <input type="text" name="name" id="name" autocomplete="off" maxlength="10">
                 <button id="startGameBtn" style="background: #6DFF74;">Start playing</button>
-                <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
+                <a href="pages/rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
                 <button data-modal-target="#settingsModal" style="background: #A9A9A9; margin: 10px auto;">Settings</button>
                 <button data-modal-target="#exitModal" style="background: #FF6D6F;">Exit</button>
             </div>
@@ -60,7 +60,7 @@
         <div class="modal-content">
             <span class="close close-btn">&times;</span>
             <h1>A saved game<br>has been found.</h1>
-            <a href="gameplay.html"><button style="background: #6DFF74; margin-bottom: 15px;">Continue Playing</button></a>
+            <a href="pages/gameplay.html"><button style="background: #6DFF74; margin-bottom: 15px;">Continue Playing</button></a>
             <button id="newGameBtn" style="background: #FDFF6D; margin-bottom: 15px;">Start New Game</button>
             <button class="close-btn" style="background: #FF6D6F;">Cancel</button>
         </div>
@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <img class="bg-cards" src="images/background.png" alt="cards" draggable="false">
-    <script src="script.js" defer></script>
+    <img class="bg-cards" src="assets/images/background.png" alt="cards" draggable="false">
+    <script src="assets/js/script.js" defer></script>
 </body>
 </html>

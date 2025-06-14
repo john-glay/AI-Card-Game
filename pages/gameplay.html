@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="images/card-back.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="../assets/images/card-back.png">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <title>Bato Bato Pick</title>
     <style>
         body {
@@ -22,14 +22,14 @@
                 <progress class="progress" id="ai-hp-progress" value="30" max="30"></progress>
             </div>
             <div class="card-back">
-                <img src="images/card-back.png" alt="card-back">
-                <img src="images/card-back.png" alt="card-back">
-                <img src="images/card-back.png" alt="card-back">
-                <img src="images/card-back.png" alt="card-back">
-                <img src="images/card-back.png" alt="card-back">
+                <img src="../assets/images/card-back.png" alt="card-back">
+                <img src="../assets/images/card-back.png" alt="card-back">
+                <img src="../assets/images/card-back.png" alt="card-back">
+                <img src="../assets/images/card-back.png" alt="card-back">
+                <img src="../assets/images/card-back.png" alt="card-back">
             </div>
             <div class="stack-container">
-                <img class="ai-stack" src="images/stack1.png" alt="stack1" draggable="false">
+                <img class="ai-stack" src="../assets/images/stack1.png" alt="stack1" draggable="false">
                 <div class="deck-count" id="ai-deck-count"></div>
             </div>
         </div>
@@ -46,10 +46,10 @@
                 </div>
             </div>
             <div class="gameplay">
-                <img id="ai-card-slot" src="images/ai-card.png" alt="ai-card" draggable="false">
+                <img id="ai-card-slot" src="../assets/images/ai-card.png" alt="ai-card" draggable="false">
                 <p id="vs-text">VS</p>
                 <div id="clash-text"></div>
-                <img id="player-card-slot" src="images/player-card.png" alt="player-card" draggable="false">
+                <img id="player-card-slot" src="../assets/images/player-card.png" alt="player-card" draggable="false">
                 <div id="round-result-message"></div>
             </div>
         </div>
@@ -57,7 +57,7 @@
     <div class="player-container">
         <div class="container">
             <div class="stack-container">
-                <img class="player-stack" src="images/stack2.png" alt="stack2" draggable="false">
+                <img class="player-stack" src="../assets/images/stack2.png" alt="stack2" draggable="false">
                 <div class="deck-count" id="player-deck-count">19</div>
             </div>
             <div class="health-points">
@@ -66,7 +66,7 @@
                 <progress class="progress" id="player-hp-progress" value="30" max="30"></progress>
             </div>
             <div class="play-cards">
-                <button data-card-index="0"><img src="images/rock.png" alt="Rock"></button><button data-card-index="1"><img src="images/paper.png" alt="Paper"></button><button data-card-index="2"><img src="images/scissors.png" alt="Scissors"></button><button data-card-index="3"><img src="images/water.png" alt="Water"></button><button data-card-index="4"><img src="images/fire.png" alt="Fire"></button>
+                <button data-card-index="0"><img src="../assets/images/rock.png" alt="Rock"></button><button data-card-index="1"><img src="../assets/images/paper.png" alt="Paper"></button><button data-card-index="2"><img src="../assets/images/scissors.png" alt="Scissors"></button><button data-card-index="3"><img src="../assets/images/water.png" alt="Water"></button><button data-card-index="4"><img src="../assets/images/fire.png" alt="Fire"></button>
             </div>
             <p class="name">Name</p>
         </div>
@@ -87,7 +87,7 @@
             <button data-modal-target="#howToPlayModal" style="background: #6DCFFF; margin: 15px 0;">How to Play</button>
             <button data-modal-target="#settingsModal" style="background: #A9A9A9;">Settings</button>
             <button style="background: #FDFF6D; margin: 15px 0;">Restart</button>
-            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+            <a href="../index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
         </div>
     </div>
 
@@ -161,21 +161,21 @@
                 <h1>Card Library</h1>
                 <div class="card-info-container">
                     <div class="card-info-item">
-                        <img src="images/rock.png" alt="Rock">
+                        <img src="../assets/images/rock.png" alt="Rock">
                         <div class="card-text">
                             <h3>Rock</h3>
                             <p>Base Damage: 4. Wins against Scissors.</p>
                         </div>
                     </div>
                     <div class="card-info-item">
-                        <img src="images/paper.png" alt="Paper">
+                        <img src="../assets/images/paper.png" alt="Paper">
                         <div class="card-text">
                             <h3>Paper</h3>
                             <p>Base Damage: 3. Wins against Rock.</p>
                         </div>
                     </div>
                     <div class="card-info-item">
-                        <img src="images/scissors.png" alt="Scissors">
+                        <img src="../assets/images/scissors.png" alt="Scissors">
                         <div class="card-text">
                             <h3>Scissors</h3>
                             <p>Base Damage: 5. Wins against Paper.</p>
@@ -185,21 +185,21 @@
                 <hr class="card-divider">
                 <div class="card-info-container">
                      <div class="card-info-item power-up">
-                        <img src="images/fire.png" alt="Fire">
+                        <img src="../assets/images/fire.png" alt="Fire">
                         <div class="card-text">
                             <h3>Fire Power-up</h3>
                             <p>Adds +2 damage to your attack.</p>
                         </div>
                     </div>
                      <div class="card-info-item power-up">
-                        <img src="images/water.png" alt="Water">
+                        <img src="../assets/images/water.png" alt="Water">
                         <div class="card-text">
                             <h3>Water Power-up</h3>
                             <p>Reduces incoming damage by 1. Cancels opponent's Fire Power-up.</p>
                         </div>
                     </div>
                      <div class="card-info-item power-up">
-                        <img src="images/thunder.png" alt="Thunder">
+                        <img src="../assets/images/thunder.png" alt="Thunder">
                         <div class="card-text">
                             <h3>Thunder Power-up</h3>
                             <p>If you win, your opponent cannot use a Power-Up on their next turn.</p>
@@ -246,7 +246,7 @@
             <span class="close close-btn">&times;</span>
             <h1>Congratulations<br>You Won!!!</h1>
             <button style="background: #6DFF74; margin-bottom: 15px;">Play Again</button>
-            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+            <a href="../index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
         </div>
     </div>
 
@@ -256,11 +256,11 @@
             <span class="close close-btn">&times;</span>
             <h1>You lost :(<br>Better Luck<br>Next Time</h1>
             <button style="background: #6DFF74; margin-bottom: 15px;">Play Again</button>
-            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+            <a href="../index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
         </div>
     </div>
 
-    <script src="game.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="../assets/js/game.js" defer></script>
+    <script src="../assets/js/script.js" defer></script>
 </body>
 </html>
