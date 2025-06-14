@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
         combineButton.addEventListener('click', handleCombineUndoClick);
 
         // --- PAUSE/RESTART & GAME OVER LOGIC ---
-        const returnToMenuBtn = document.querySelector('#pauseModal a[href="index.html"]');
+        const returnToMenuBtn = document.querySelector('#pauseModal a[href="../index.html"]');
         if(returnToMenuBtn) {
             returnToMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault(); // Prevent default link behavior
