@@ -795,4 +795,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadSettings();
+
+    // --- HOW TO PLAY MODAL TABS ---
+    const howToPlayModal = document.getElementById('howToPlayModal');
+    if (howToPlayModal) {
+        const tabButtons = howToPlayModal.querySelectorAll('.tab-button');
+        const tabContents = howToPlayModal.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = document.querySelector(button.dataset.tabTarget);
+
+                // Update button active state
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Update content active state
+                tabContents.forEach(content => content.classList.remove('active'));
+                targetTab.classList.add('active');
+            });
+        });
+    }
 }); 

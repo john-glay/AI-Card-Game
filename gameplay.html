@@ -83,9 +83,10 @@
             <span class="close close-btn">&times;</span>
             <h1>Pause</h1>
             <button style="background: #6DFF74;">Resume</button>
-            <button data-modal-target="#settingsModal" style="background: #A9A9A9; margin: 15px 0;">Settings</button>
-            <button style="background: #FDFF6D;">Restart</button>
-            <a href="index.html"><button style="background: #FF6D6F; margin-top: 15px;">Return to Main Menu</button></a>
+            <button data-modal-target="#howToPlayModal" style="background: #6DCFFF; margin: 15px 0;">How to Play</button>
+            <button data-modal-target="#settingsModal" style="background: #A9A9A9;">Settings</button>
+            <button style="background: #FDFF6D; margin: 15px 0;">Restart</button>
+            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
         </div>
     </div>
 
@@ -115,6 +116,96 @@
             <img id="info-modal-img" src="" alt="Card Image">
             <h1 id="info-modal-name" style="font-size: 24px; margin-top: 20px; margin-bottom: 10px;"></h1>
             <p id="info-modal-desc" style="font-family: 'Poppins', sans-serif; text-align: center; max-width: 80%; margin: auto;"></p>
+        </div>
+    </div>
+
+    <!-- HOW TO PLAY MODAL -->
+    <div id="howToPlayModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <div class="modal-tabs">
+                <button class="tab-button active" data-tab-target="#rules-tab">Rules</button>
+                <button class="tab-button" data-tab-target="#cards-tab">Cards</button>
+            </div>
+
+            <div id="rules-tab" class="tab-content active">
+                <h1>How To Play</h1>
+                <div class="rules-section">
+                    <h2>Objective</h2>
+                    <p>Be the first to reduce your opponent's HP to zero! Use a combination of Base Cards and Power-Ups to attack, defend, and outsmart your opponent.</p>
+                </div>
+                <div class="rules-section">
+                    <h2>Setup</h2>
+                    <p>Each player starts with 30 HP and a deck of 24 cards, drawing 5 to form their starting hand. The deck consists of:</p>
+                    <ul class="deck-list">
+                        <li>5 Rock Cards</li>
+                        <li>5 Paper Cards</li>
+                        <li>5 Scissors Cards</li>
+                        <li>3 Fire Power-ups</li>
+                        <li>3 Water Power-ups</li>
+                        <li>3 Thunder Power-ups</li>
+                    </ul>
+                </div>
+                <div class="rules-section">
+                    <h2>Turn Phase</h2>
+                    <ol class="turn-phase-list">
+                        <li><strong>Card Selection:</strong> Choose 1 Base Card (Rock, Paper, Scissors) and optionally 1 Power-Up to play.</li>
+                        <li><strong>Resolution:</strong> Cards are revealed! The winner is determined by Rock-Paper-Scissors rules. Damage is calculated based on the winning card and any Power-Up effects.</li>
+                        <li><strong>Draw:</strong> Replenish your hand by drawing back up to 5 cards.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div id="cards-tab" class="tab-content">
+                <h1>Card Library</h1>
+                <div class="card-info-container">
+                    <div class="card-info-item">
+                        <img src="images/rock.png" alt="Rock">
+                        <div>
+                            <h3>Rock</h3>
+                            <p>Base Damage: 4. Wins against Scissors.</p>
+                        </div>
+                    </div>
+                    <div class="card-info-item">
+                        <img src="images/paper.png" alt="Paper">
+                        <div>
+                            <h3>Paper</h3>
+                            <p>Base Damage: 3. Wins against Rock.</p>
+                        </div>
+                    </div>
+                    <div class="card-info-item">
+                        <img src="images/scissors.png" alt="Scissors">
+                        <div>
+                            <h3>Scissors</h3>
+                            <p>Base Damage: 5. Wins against Paper.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr class="card-divider">
+                <div class="card-info-container">
+                     <div class="card-info-item power-up">
+                        <img src="images/fire.png" alt="Fire">
+                        <div>
+                            <h3>Fire Power-up</h3>
+                            <p>Adds +2 damage to your attack.</p>
+                        </div>
+                    </div>
+                     <div class="card-info-item power-up">
+                        <img src="images/water.png" alt="Water">
+                        <div>
+                            <h3>Water Power-up</h3>
+                            <p>Reduces incoming damage by 1. Cancels opponent's Fire Power-up.</p>
+                        </div>
+                    </div>
+                     <div class="card-info-item power-up">
+                        <img src="images/thunder.png" alt="Thunder">
+                        <div>
+                            <h3>Thunder Power-up</h3>
+                            <p>If you win, your opponent cannot use a Power-Up on their next turn.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

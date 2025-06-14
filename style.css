@@ -544,6 +544,57 @@ input:checked + .slider:before {
     width: 420px;
 }
 
+.modal-content .desc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#howToPlayModal .modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-tabs {
+    display: flex;
+    border-bottom: 2px solid black;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    text-transform: uppercase;
+    width: auto;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none !important;
+}
+
+.tab-button.active {
+    border-bottom: 4px solid #FF6D6F;
+    transform: none !important;
+}
+
+.tab-button:hover {
+    background-color: rgba(0,0,0,0.1);
+    transform: none !important;
+    filter: none;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: slideUpFadeIn 0.5s ease-in-out;
+}
+
 .close-btn {
     cursor: pointer;
 }
@@ -813,7 +864,7 @@ input:checked + .slider:before {
     }
 
     .player-container .play-cards {
-        padding-bottom: 10px;
+        padding-bottom: 20px;
         gap: 25px;
     }
 
@@ -1112,4 +1163,111 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     to {
         opacity: 1;
     }
+}
+
+/* --- HOW TO PLAY MODAL REFINEMENTS --- */
+#howToPlayModal h1, #howToPlayModal h2 {
+    color: #962bc0; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.rules-section {
+    margin-bottom: 25px;
+    padding-left: 15px;
+    border-left: 4px solid #FFC06D;
+}
+
+.rules-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.rules-section p, .rules-section li {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.deck-list, .turn-phase-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.deck-list li {
+    padding-left: 20px;
+    position: relative;
+}
+
+.deck-list li::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    color: #FF6D6F;
+    font-size: 14px;
+}
+
+.turn-phase-list {
+    counter-reset: turn-phase-counter;
+}
+
+.turn-phase-list li {
+    counter-increment: turn-phase-counter;
+    padding-left: 30px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.turn-phase-list li::before {
+    content: counter(turn-phase-counter);
+    position: absolute;
+    left: 0;
+    background: #a705e7;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Card Library Styles */
+#cards-tab .card-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#cards-tab .card-info-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#cards-tab .card-info-item img {
+    height: 80px;
+    width: auto;
+}
+
+#cards-tab .card-info-item h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+#cards-tab .card-info-item p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    text-align: left;
+}
+
+.card-divider {
+    border: none;
+    border-top: 2px dashed #ccc;
+    margin: 25px 0;
 }
