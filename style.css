@@ -1309,3 +1309,69 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     text-shadow: 0 0 10px black;
     transform: none !important;
 }
+
+body.dark-mode .modal-content h1, 
+body.dark-mode .modal-content label {
+    color: #E0E0E0;
+}
+
+body.dark-mode .close.close-btn {
+    color: #E0E0E0;
+}
+
+body.dark-mode .tab-button {
+    color: #E0E0E0;
+}
+
+body.dark-mode .tab-button.active {
+    border-bottom-color: #6DCFFF;
+}
+
+body.dark-mode #howToPlayModal h1, 
+body.dark-mode #howToPlayModal h2,
+body.dark-mode .rules h2 {
+    color: #6DCFFF;
+}
+
+body.dark-mode .rules-section {
+    border-left-color: #6DCFFF;
+}
+
+body.dark-mode .rules-section p, 
+body.dark-mode .rules-section li {
+    color: #E0E0E0;
+}
+
+body.dark-mode .deck-list li::before {
+    color: #6DCFFF;
+}
+
+body.dark-mode .turn-phase-list li::before {
+    background: #6DCFFF;
+    color: #1a1a1a;
+}
+
+body.dark-mode #cards-tab .card-info-item {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode #cards-tab .card-info-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode #cards-tab .card-info-item h3 {
+    color: #E0E0E0;
+}
+
+body.dark-mode #cards-tab .card-info-item p {
+    color: #ccc;
+}
+
+body.dark-mode .card-divider {
+    border-top-color: #444;
+}
+
+body.dark-mode #reshuffle-message {
+    background-image: linear-gradient(to top, #485563, #29323c);
+    border-color: #E0E0E0;
+}

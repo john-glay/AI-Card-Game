@@ -25,9 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Apply settings to UI
-        volumeSlider.value = settings.volume * 100;
+        if (volumeSlider) {
+            volumeSlider.value = settings.volume * 100;
+        }
         audio.bgm.volume = settings.volume;
-        darkModeToggle.checked = settings.darkMode;
+        if (darkModeToggle) {
+            darkModeToggle.checked = settings.darkMode;
+        }
 
         // Apply dark mode
         if (settings.darkMode) {
@@ -37,30 +41,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Handle BGM
-        if (settings.volume > 0) {
+        if (settings.volume > 0 && audio.bgm.paused) {
             audio.bgm.play().catch(() => {});
-        } else {
+        } else if (settings.volume === 0) {
             audio.bgm.pause();
         }
     }
 
-    volumeSlider.addEventListener('input', () => {
-        settings.volume = volumeSlider.value / 100;
-        audio.bgm.volume = settings.volume;
-        
-        if (settings.volume > 0 && audio.bgm.paused) {
-            audio.bgm.play().catch(()=>{});
-        } else if (settings.volume === 0) {
-            audio.bgm.pause();
-        }
-        saveSettings();
-    });
+    if(volumeSlider) {
+        volumeSlider.addEventListener('input', () => {
+            settings.volume = volumeSlider.value / 100;
+            audio.bgm.volume = settings.volume;
+            
+            if (settings.volume > 0 && audio.bgm.paused) {
+                audio.bgm.play().catch(()=>{});
+            } else if (settings.volume === 0) {
+                audio.bgm.pause();
+            }
+            saveSettings();
+        });
+    }
 
-    darkModeToggle.addEventListener('change', () => {
-        settings.darkMode = darkModeToggle.checked;
-        document.body.classList.toggle('dark-mode');
-        saveSettings();
-    });
+    if(darkModeToggle) {
+        darkModeToggle.addEventListener('change', () => {
+            settings.darkMode = darkModeToggle.checked;
+            document.body.classList.toggle('dark-mode');
+            saveSettings();
+        });
+    }
 
     // --- GAME INITIALIZATION & UI RENDERING ---
     // Only run game logic on the gameplay page
