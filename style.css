@@ -278,10 +278,11 @@ body {
     align-items: center;
     display: flex;
     justify-content: center;
+    min-height: 200px;
 }
 
 .ai-container .card-back img,
-.player-container .play-cards img,
+.player-container .play-cards button img,
 .game-container .gameplay img {
     height: 153px;
 }
@@ -294,11 +295,53 @@ body {
     background: transparent;
 }
 
-.player-container .play-cards button.selected {
+.player-card-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+    padding: 0 5px;
+}
+
+.player-card-container.selected {
     transform: translateY(-15px);
+}
+
+.player-card-container.selected button:first-of-type {
     box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     border: 4px solid #FDFF6D;
     border-radius: 16px;
+}
+
+.info-button {
+    display: none;
+    position: absolute;
+    bottom: -20px;
+    background: #6dccff;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    width: auto;
+    z-index: 2;
+    border: 2px solid black;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-card-container.selected .info-button {
+    display: block;
+}
+
+.info-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.info-button:active {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 .game-container .gameplay {
@@ -439,6 +482,10 @@ body {
         margin: 0;
         padding: 15px 0;
     }
+
+    .player-container .play-cards {
+        min-height: 180px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -517,7 +564,12 @@ body {
         height: 105px;
     }
 
-    .player-container .play-cards img {
+    .player-container .play-cards {
+        flex-wrap: wrap;
+        min-height: 0;
+    }
+
+    .player-container .play-cards button img {
         height: 125px;
     }
 
@@ -590,7 +642,11 @@ body {
         height: 80px;
     }
 
-    .player-container .play-cards img {
+    .player-container .play-cards {
+        padding-bottom: 20px;
+    }
+
+    .player-container .play-cards button img {
         height: 120px;
     }
 
@@ -657,9 +713,9 @@ body {
     display: none;
 }
 
-.game-container .gameplay {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 20px;
+#info-modal-img {
+    height: 250px;
+    border-radius: 16px;
+    border: 5px solid black;
+    background-color: white;
 }

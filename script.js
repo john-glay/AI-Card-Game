@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerCardSlot = document.getElementById('player-card-slot');
         const roundResultMsg = document.getElementById('round-result-message');
         const battleFocusOverlay = document.getElementById('battle-focus-overlay');
+        const cardInfoModal = document.getElementById('cardInfoModal');
         const winModal = document.getElementById('winModal');
         const loseModal = document.getElementById('loseModal');
 
@@ -52,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // --- CARD SELECTION LOGIC ---
-        const updateSelectedCards = (card, cardButton, index) => {
+        const updateSelectedCards = (card, cardContainer, index) => {
             if (isMoveConfirmed) return; // Lock selections after confirmation
 
             const cardType = card.type;
@@ -61,16 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Deselect if clicking the same card
             if (currentSelectionIndex === index) {
                 selectedCards[cardType] = null;
-                cardButton.classList.remove('selected');
+                cardContainer.classList.remove('selected');
             } else {
                 // Deselect previous card of the same type
                 if (currentSelectionIndex !== null) {
-                    const prevButton = playerHandContainer.querySelector(`[data-card-index="${currentSelectionIndex}"]`);
-                    if(prevButton) prevButton.classList.remove('selected');
+                    const prevContainer = playerHandContainer.querySelector(`[data-card-index="${currentSelectionIndex}"]`);
+                    if(prevContainer) prevContainer.classList.remove('selected');
                 }
                 // Select the new card
                 selectedCards[cardType] = index;
-                cardButton.classList.add('selected');
+                cardContainer.classList.add('selected');
             }
             updateButtonStates();
         };
@@ -88,12 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Restore selection visuals after re-render
                 if (selectedCards.base !== null) {
-                    const baseBtn = playerHandContainer.querySelector(`[data-card-index="${selectedCards.base}"]`);
-                    if (baseBtn) baseBtn.classList.add('selected');
+                    const baseContainer = playerHandContainer.querySelector(`[data-card-index="${selectedCards.base}"]`);
+                    if (baseContainer) baseContainer.classList.add('selected');
                 }
                 if (selectedCards.power !== null) {
-                    const powerBtn = playerHandContainer.querySelector(`[data-card-index="${selectedCards.power}"]`);
-                    if (powerBtn) powerBtn.classList.add('selected');
+                    const powerContainer = playerHandContainer.querySelector(`[data-card-index="${selectedCards.power}"]`);
+                    if (powerContainer) powerContainer.classList.add('selected');
                 }
 
                 combineButton.textContent = 'Combine';
@@ -110,8 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const combinedImageSrc = `images/${baseCard.name.toLowerCase()}-${powerCard.name.toLowerCase()}.png`;
                 playerCardSlot.src = combinedImageSrc;
 
-                playerHandContainer.querySelectorAll('button').forEach(btn => {
-                    if (!btn.classList.contains('selected')) btn.disabled = true;
+                playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
+                    if (!container.classList.contains('selected')) {
+                        container.querySelector('button').disabled = true;
+                    }
                 });
                 
                 combineButton.textContent = 'Undo';
@@ -139,8 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!isMoveConfirmed) {
                  isMoveConfirmed = true;
                  playerCardSlot.src = baseCard.image;
-                 playerHandContainer.querySelectorAll('button').forEach(btn => {
-                    if (!btn.classList.contains('selected')) btn.disabled = true;
+                 playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
+                    if (!container.classList.contains('selected')) {
+                        container.querySelector('button').disabled = true;
+                    }
                 });
                  await sleep(500); 
             }
@@ -221,6 +226,13 @@ document.addEventListener('DOMContentLoaded', () => {
             isActionInProgress = false;
         };
 
+        const showCardInfo = (card) => {
+            document.getElementById('info-modal-img').src = card.image;
+            document.getElementById('info-modal-name').textContent = card.name;
+            document.getElementById('info-modal-desc').textContent = card.description;
+            openModal(cardInfoModal);
+        };
+
         const renderUI = (gameInstance) => {
             // Render names and HP
             document.querySelector('.player-container .name').textContent = gameInstance.playerName;
@@ -243,17 +255,33 @@ document.addEventListener('DOMContentLoaded', () => {
             // Render player hand
             playerHandContainer.innerHTML = '';
             gameInstance.player.hand.forEach((card, index) => {
+                const cardContainer = document.createElement('div');
+                cardContainer.classList.add('player-card-container');
+                cardContainer.dataset.cardIndex = index;
+
                 const cardButton = document.createElement('button');
-                cardButton.dataset.cardIndex = index; // Use index for unique identification
                 cardButton.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
+
+                const infoButton = document.createElement('button');
+                infoButton.classList.add('info-button');
+                infoButton.textContent = 'Info';
 
                 if (game.player.isStunned && card.type === 'power') {
                     cardButton.disabled = true;
                     cardButton.style.opacity = '0.5';
+                    infoButton.disabled = true;
                 }
 
-                cardButton.addEventListener('click', () => updateSelectedCards(card, cardButton, index));
-                playerHandContainer.appendChild(cardButton);
+                cardContainer.appendChild(cardButton);
+                cardContainer.appendChild(infoButton);
+
+                cardButton.addEventListener('click', () => updateSelectedCards(card, cardContainer, index));
+                infoButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showCardInfo(card);
+                });
+
+                playerHandContainer.appendChild(cardContainer);
             });
             updateButtonStates();
         };
