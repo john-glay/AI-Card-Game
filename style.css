@@ -1203,7 +1203,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     content: '▶';
     position: absolute;
     left: 0;
-    color: #FF6D6F;
+    color: #962bc0;
     font-size: 14px;
 }
 
@@ -1248,6 +1248,17 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     background: rgba(0,0,0,0.05);
     padding: 10px;
     border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#cards-tab .card-info-item:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+#cards-tab .card-info-item .card-text {
+    flex-grow: 1;
+    text-align: center;
 }
 
 #cards-tab .card-info-item img {
@@ -1270,4 +1281,31 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     border: none;
     border-top: 2px dashed #ccc;
     margin: 25px 0;
+}
+
+/* Card View Modal styles */
+.card-view-content {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    width: auto;
+    max-width: 300px;
+    box-shadow: none;
+}
+
+#zoomed-card-img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    border: 5px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.card-view-content .close.close-btn {
+    color: white;
+    font-size: 50px;
+    top: -15px;
+    right: 0;
+    text-shadow: 0 0 10px black;
+    transform: none !important;
 }

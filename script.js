@@ -815,5 +815,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetTab.classList.add('active');
             });
         });
+
+        const cardViewModal = document.getElementById('cardViewModal');
+        if (cardViewModal) {
+            const zoomedCardImg = document.getElementById('zoomed-card-img');
+            const cardInfoItems = howToPlayModal.querySelectorAll('.card-info-item');
+    
+            cardInfoItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const imgSrc = item.querySelector('img').src;
+                    zoomedCardImg.src = imgSrc;
+                    openModal(cardViewModal);
+                });
+            });
+        }
     }
 }); 

@@ -161,21 +161,21 @@
                 <div class="card-info-container">
                     <div class="card-info-item">
                         <img src="images/rock.png" alt="Rock">
-                        <div>
+                        <div class="card-text">
                             <h3>Rock</h3>
                             <p>Base Damage: 4. Wins against Scissors.</p>
                         </div>
                     </div>
                     <div class="card-info-item">
                         <img src="images/paper.png" alt="Paper">
-                        <div>
+                        <div class="card-text">
                             <h3>Paper</h3>
                             <p>Base Damage: 3. Wins against Rock.</p>
                         </div>
                     </div>
                     <div class="card-info-item">
                         <img src="images/scissors.png" alt="Scissors">
-                        <div>
+                        <div class="card-text">
                             <h3>Scissors</h3>
                             <p>Base Damage: 5. Wins against Paper.</p>
                         </div>
@@ -185,27 +185,35 @@
                 <div class="card-info-container">
                      <div class="card-info-item power-up">
                         <img src="images/fire.png" alt="Fire">
-                        <div>
+                        <div class="card-text">
                             <h3>Fire Power-up</h3>
                             <p>Adds +2 damage to your attack.</p>
                         </div>
                     </div>
                      <div class="card-info-item power-up">
                         <img src="images/water.png" alt="Water">
-                        <div>
+                        <div class="card-text">
                             <h3>Water Power-up</h3>
                             <p>Reduces incoming damage by 1. Cancels opponent's Fire Power-up.</p>
                         </div>
                     </div>
                      <div class="card-info-item power-up">
                         <img src="images/thunder.png" alt="Thunder">
-                        <div>
+                        <div class="card-text">
                             <h3>Thunder Power-up</h3>
                             <p>If you win, your opponent cannot use a Power-Up on their next turn.</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- CARD VIEW MODAL -->
+    <div id="cardViewModal" class="modal">
+        <div class="modal-content card-view-content">
+            <span class="close close-btn">&times;</span>
+            <img id="zoomed-card-img" src="" alt="Zoomed Card Image">
         </div>
     </div>
 
