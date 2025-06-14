@@ -675,7 +675,7 @@ body {
     }
 
     .player-container .play-cards {
-        padding-bottom: 30px;
+        padding-bottom: 10px;
         gap: 25px;
     }
 
@@ -692,7 +692,7 @@ body {
     }
 
     .info-button {
-        bottom: -28px;
+        bottom: -20px;
         padding: 5px 12px;
         font-size: 12px;
     }
