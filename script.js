@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (game.isGameOver) {
                 await sleep(500);
                 const modal = game.player.hp > 0 ? winModal : loseModal;
-                modal.style.display = 'flex';
+                openModal(modal);
             } else {
                  // --- DRAW PHASE & RESHUFFLE NOTIFICATION ---
                  const drawData = game.drawForEndOfTurn();
@@ -451,13 +451,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function openModal(modal) {
-        if (modal == null) return;
-        modal.style.display = 'flex';
+        if (modal == null || modal.classList.contains('is-closing')) return;
+        modal.classList.add('visible');
     }
 
     function closeModal(modal) {
-        if (modal == null) return;
-        modal.style.display = 'none';
+        if (modal == null || !modal.classList.contains('visible')) return;
+        
+        modal.classList.add('is-closing');
+        modal.classList.remove('visible');
+
+        modal.addEventListener('transitionend', () => {
+            modal.classList.remove('is-closing');
+        }, { once: true });
     }
 
     // --- NAME & GAME START LOGIC ---

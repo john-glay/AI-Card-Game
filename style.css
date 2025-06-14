@@ -27,12 +27,13 @@ button {
     padding: 10px;
     width: 280px;
     text-transform: uppercase;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.1);
 }
 
 button:active {
@@ -49,9 +50,11 @@ button:disabled {
 
 body {
     align-items: center;
-    background-image: linear-gradient(to bottom, #FFA049, #FF4F63);
+    background-image: linear-gradient(to right, #FFA049, #FF4F63, #FFA049, #FF4F63);
+    background-size: 300% 100%;
     display: flex;
     justify-content: center;
+    animation: animated-gradient 15s ease-in-out infinite;
 }
 
 .container {
@@ -72,11 +75,13 @@ body {
     display: flex;
     gap: 40px;
     margin-bottom: 220px;
+    animation: float-menu 8s ease-in-out infinite;
 }
 
 .menu h1 {
     font-size: 100px;
     text-transform: uppercase;
+    animation: glow 3s ease-in-out infinite, pulse 4s ease-in-out infinite;
 }
 
 .menu label {
@@ -100,6 +105,7 @@ body {
 .bg-cards {
     bottom: -200px;
     position: absolute;
+    animation: float 6s ease-in-out infinite;
 }
 
 /* RULES PAGE */
@@ -484,7 +490,7 @@ input:checked + .slider:before {
 
 /* MODAL */
 .modal {
-    display: none; /* Hidden by default */
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -494,6 +500,14 @@ input:checked + .slider:before {
     align-items: center;
     justify-content: center;
     z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
@@ -504,6 +518,16 @@ input:checked + .slider:before {
     position: relative;
     text-align: center;
     width: 481px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal.visible .modal-content {
+    transform: scale(1);
+}
+
+.modal.is-closing {
+    pointer-events: none;
 }
 
 .modal-content h1 {
@@ -962,4 +986,53 @@ body.dark-mode .volume-slider::-webkit-slider-thumb {
 
 body.dark-mode .volume-slider::-moz-range-thumb {
     background: #6DFF74;
+}
+
+/* ANIMATIONS */
+@keyframes animated-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #FF4F63, 0 0 40px #FF4F63;
+    }
+    50% {
+        text-shadow: 0 0 20px #fff, 0 0 30px #FFA049, 0 0 40px #FFA049, 0 0 50px #FFA049;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float-menu {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
 }
