@@ -46,8 +46,7 @@ class Game {
                 hand: [],
                 discard: [],
                 isStunned: false,
-                reshuffleReason: null,
-                selectedCard: { base: null, power: null }
+                reshuffleReason: null
             };
             this.ai = {
                 hp: 30,
@@ -134,21 +133,17 @@ class Game {
         this.turnCount++;
         const aiMove = this._selectMoveGBFS();
         
-        this.playerHistory.push(playerMove.base.name);
+        if (playerMove.base) {
+            this.playerHistory.push(playerMove.base.name);
+        }
         
-        // Move played cards to discard pile
-        this.player.discard.push(playerMove.base);
-        if(playerMove.power) this.player.discard.push(playerMove.power);
-        this.ai.discard.push(aiMove.base);
-        if(aiMove.power) this.ai.discard.push(aiMove.power);
-
-        this._removeCardFromHand(this.player.hand, playerMove.base);
-        this._removeCardFromHand(this.player.hand, playerMove.power);
-        this._removeCardFromHand(this.ai.hand, aiMove.base);
-        this._removeCardFromHand(this.ai.hand, aiMove.power);
+        this._moveCardToDiscard(this.player, playerMove.base);
+        this._moveCardToDiscard(this.player, playerMove.power);
+        this._moveCardToDiscard(this.ai, aiMove.base);
+        this._moveCardToDiscard(this.ai, aiMove.power);
 
         const result = this._resolveRound(playerMove, aiMove);
-        this._applyRoundResult(result);
+        this._applyRoundResult(result, playerMove, aiMove);
 
         if (this.player.hp <= 0 || this.ai.hp <= 0) {
             this.isGameOver = true;
@@ -157,14 +152,33 @@ class Game {
         return { playerMove, aiMove, result };
     }
 
+    _moveCardToDiscard(target, card) {
+        if (!card) return;
+        const index = target.hand.indexOf(card);
+        if (index > -1) {
+            target.hand.splice(index, 1);
+            target.discard.push(card);
+        }
+    }
+
     drawForEndOfTurn() {
         this.player.reshuffled = false;
         this.player.reshuffleReason = null;
         this.ai.reshuffled = false;
         this.ai.reshuffleReason = null;
 
-        this._replenishHand(this.player);
-        this._replenishHand(this.ai);
+        const playerDrawAmount = 5 - this.player.hand.length;
+        const aiDrawAmount = 5 - this.ai.hand.length;
+
+        for (let i = 0; i < playerDrawAmount; i++) {
+            this._drawCard(this.player);
+        }
+        for (let i = 0; i < aiDrawAmount; i++) {
+            this._drawCard(this.ai);
+        }
+
+        this._ensurePlayableHand(this.player);
+        this._ensurePlayableHand(this.ai);
 
         return {
             playerReshuffled: this.player.reshuffled,
@@ -172,39 +186,6 @@ class Game {
             playerReason: this.player.reshuffleReason,
             aiReason: this.ai.reshuffleReason
         };
-    }
-
-    _replenishHand(target) {
-        // Draw until hand has 5 cards, with smart drawing for the last card
-        while(target.hand.length < 5 && (target.deck.length > 0 || target.discard.length > 0)) {
-            const isStuckWithPowerUps = target.hand.length === 4 && target.hand.every(c => c.type === 'power');
-            this._drawCard(target, isStuckWithPowerUps);
-        }
-
-        // After drawing, check for an unplayable hand (no base cards) as a last resort.
-        const hasBaseCard = target.hand.some(card => card.type === cardTypes.BASE);
-        const canEverDrawBaseCard = hasBaseCard || target.deck.some(c => c.type === 'base') || target.discard.some(c => c.type === 'base');
-
-        if (!hasBaseCard && canEverDrawBaseCard) {
-            this._performMulligan(target);
-        }
-    }
-
-    _performMulligan(target) {
-        // Move all cards from hand and deck back to discard
-        target.discard.push(...target.hand);
-        target.hand = [];
-        target.discard.push(...target.deck);
-        target.deck = [];
-        
-        // Reshuffle discard pile into a new deck
-        target.deck = this._shuffle(target.discard);
-        target.discard = [];
-        target.reshuffled = true;
-        target.reshuffleReason = 'Unplayable Hand';
-
-        // Draw a fresh hand of 5
-        this._replenishHand(target);
     }
 
     _resolveRound(playerMove, aiMove) {
@@ -229,102 +210,79 @@ class Game {
 
         if (winner === 'player') {
             playerDamage = playerMove.base.damage;
-            if (pPower === 'Fire' && aPower !== 'Water') playerDamage += 2;
-            if (pPower === 'Water') playerDamage = Math.max(0, playerDamage - 1);
+            if (pPower === 'Fire' && aPower !== 'Water') playerDamage += powerUps.FIRE.value;
         } else if (winner === 'ai') {
             aiDamage = aiMove.base.damage;
-            if (aPower === 'Fire' && pPower !== 'Water') aiDamage += 2;
-            if (aPower === 'Water') aiDamage = Math.max(0, aiDamage - 1);
+            if (aPower === 'Fire' && pPower !== 'Water') aiDamage += powerUps.FIRE.value;
         }
 
-        // Apply opponent's water power-up damage reduction
-        if (aPower === 'Water') playerDamage = Math.max(0, playerDamage - 1);
-        if (pPower === 'Water') aiDamage = Math.max(0, aiDamage - 1);
+        if (aPower === 'Water') playerDamage = Math.max(0, playerDamage - powerUps.WATER.value);
+        if (pPower === 'Water') aiDamage = Math.max(0, aiDamage - powerUps.WATER.value);
 
-        // Stun logic
-        this.player.isStunned = (winner === 'ai' && aPower === 'Thunder');
-        this.ai.isStunned = (winner === 'player' && pPower === 'Thunder');
-
-        const damageDealt = winner === 'player' ? playerDamage : aiDamage;
-        return { winner, damageDealt };
+        return { winner, playerDamage, aiDamage };
     }
 
-    _applyRoundResult(result) {
-        if (result.winner === 'player') {
-            this.ai.hp -= result.damageDealt;
-        } else if (result.winner === 'ai') {
-            this.player.hp -= result.damageDealt;
-        }
-        if (this.ai.hp < 0) this.ai.hp = 0;
+    _applyRoundResult(result, playerMove, aiMove) {
+        this.player.hp -= result.aiDamage;
+        this.ai.hp -= result.playerDamage;
+
         if (this.player.hp < 0) this.player.hp = 0;
-    }
+        if (this.ai.hp < 0) this.ai.hp = 0;
 
-    _removeCardFromHand(hand, cardToRemove) {
-        if (!cardToRemove) return;
-        const cardIndex = hand.indexOf(cardToRemove);
-        if (cardIndex > -1) {
-            hand.splice(cardIndex, 1);
-        }
+        this.player.isStunned = (result.winner === 'ai' && aiMove.power?.name === 'Thunder');
+        this.ai.isStunned = (result.winner === 'player' && playerMove.power?.name === 'Thunder');
     }
 
     _ensurePlayableHand(target) {
         const hasBaseCard = target.hand.some(card => card.type === cardTypes.BASE);
         if (hasBaseCard) return;
 
-        // Find a base card in the deck
-        const baseCardInDeckIndex = target.deck.findIndex(card => card.type === cardTypes.BASE);
-        if (baseCardInDeckIndex === -1) {
-            // This is an extreme edge case (no base cards in the first 10 cards)
-            // Perform a full mulligan
-            this._performMulligan(target);
-            return;
-        };
+        const canDrawBase = target.deck.some(c => c.type === 'base') || target.discard.some(c => c.type === 'base');
+        if (!canDrawBase) return;
 
-        // Find a power-up in hand to swap
-        const powerUpInHandIndex = target.hand.findIndex(card => card.type === cardTypes.POWER);
+        target.discard.push(...target.hand);
+        target.hand = [];
+        target.discard.push(...target.deck);
+        target.deck = [];
         
-        // This should always find one, since the hand has no base cards
-        if (powerUpInHandIndex !== -1) {
-            // Swap the cards
-            const powerUpCard = target.hand[powerUpInHandIndex];
-            const baseCard = target.deck[baseCardInDeckIndex];
-            
-            target.hand[powerUpInHandIndex] = baseCard;
-            target.deck[baseCardInDeckIndex] = powerUpCard;
+        target.deck = this._shuffle(target.discard);
+        target.discard = [];
+        target.reshuffled = true;
+        target.reshuffleReason = 'Unplayable Hand';
 
-            // Shuffle the deck to maintain randomness
-            this._shuffle(target.deck);
+        for (let i = 0; i < 5; i++) {
+            this._drawCard(target);
         }
     }
 
     // --- GBFS AI IMPLEMENTATION ---
     _selectMoveGBFS() {
-        // 1. Predict opponent's next base card
         const counts = this.playerHistory.reduce((acc, move) => {
             acc[move] = (acc[move] || 0) + 1;
             return acc;
         }, { Rock: 0, Paper: 0, Scissors: 0 });
 
-        let predicted = 'Rock'; // Default prediction
+        let predictedMoveName = 'Rock';
         if (this.playerHistory.length > 0) {
-            predicted = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            predictedMoveName = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
         }
-        
-        const predictedCard = Object.values(baseCards).find(c => c.name === predicted);
+        const predictedCard = Object.values(baseCards).find(c => c.name === predictedMoveName);
 
-        // 2. Generate all legal successor moves and evaluate with heuristic
         let bestMove = { move: null, score: -Infinity };
-        const aiBaseCards = this.ai.hand.filter(c => c.type === 'base');
-        const aiPowerUps = this.ai.hand.filter(c => c.type === 'power');
+        const aiBaseCards = this.ai.hand.filter(c => c.type === cardTypes.BASE);
+        const aiPowerUps = this.ai.hand.filter(c => c.type === cardTypes.POWER);
+        
+        if (aiBaseCards.length === 0) {
+            return { base: this.ai.hand[0], power: null };
+        }
         
         for (const base of aiBaseCards) {
             const possiblePowers = [null, ...aiPowerUps];
             for (const power of possiblePowers) {
-                // Skip if AI is stunned and tries to use a power-up
                 if (this.ai.isStunned && power) continue;
                 
                 const state = { base, power };
-                const h = this._heuristic(state, predictedCard);
+                const h = this._heuristic(state, predictedCard, this.ai.hp, this.player.hp);
                 if (h > bestMove.score) {
                     bestMove = { move: state, score: h };
                 }
@@ -334,17 +292,17 @@ class Game {
         return bestMove.move;
     }
 
-    _heuristic(state, predicted) {
+    _heuristic(state, predicted, hpAI, hpPlayer) {
         let baseDmg = state.base.damage;
         let bonus = 0;
         
         if (state.power?.name === 'Fire') bonus += 2;
-        if (state.power?.name === 'Water') baseDmg = Math.max(0, baseDmg - 1);
+        if (state.power?.name === 'Water') baseDmg -= 1;
 
         const winProb = this._winProb(state.base, predicted);
         const expectedDmg = (baseDmg + bonus) * winProb;
         
-        const stunUtility = (state.power?.name === 'Thunder' && this.player.hp > this.ai.hp) ? 3 : 0;
+        const stunUtility = (state.power?.name === 'Thunder' && hpPlayer > hpAI) ? 3 : 0;
         
         return expectedDmg + stunUtility;
     }

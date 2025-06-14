@@ -1469,6 +1469,22 @@ body.dark-mode #reshuffle-message {
     animation: text-pop 0.3s ease-out forwards;
 }
 
+@keyframes card-flip {
+    0% {
+        transform: scaleX(1);
+    }
+    50% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+.animate-flip {
+    animation: card-flip 0.4s ease-in-out;
+}
+
 /* Responsive Clash Text - Overrides */
 @media (max-width: 1200px) {
   #clash-text {

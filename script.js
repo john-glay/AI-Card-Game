@@ -262,9 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 isMoveConfirmed = false;
                 playerCardSlot.src = 'images/player-card.png';
                 playerCardSlot.classList.remove('animate-reveal');
-                renderUI(game); // Easiest way to re-enable hand and listeners
                 
-                // Restore selection visuals after re-render
+                playerHandContainer.querySelectorAll('button').forEach(btn => btn.disabled = false);
                 if (selectedCards.base !== null) {
                     const baseContainer = playerHandContainer.querySelector(`[data-card-index="${selectedCards.base}"]`);
                     if (baseContainer) baseContainer.classList.add('selected');
@@ -294,13 +293,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
                     if (!container.classList.contains('selected')) {
-                        container.querySelector('button').disabled = true;
+                        container.querySelectorAll('button').forEach(btn => btn.disabled = true);
                     }
                 });
                 
                 combineButton.textContent = 'Undo';
                 combineButton.style.background = '#FF6D6F';
-                updateButtonStates();
+                playButton.disabled = false;
             }
             isActionInProgress = false;
         };
@@ -314,96 +313,96 @@ document.addEventListener('DOMContentLoaded', () => {
                 isActionInProgress = false;
                 return;
             }
-
+            
             const playerMove = {
                 base: baseCard,
                 power: selectedCards.power !== null ? game.player.hand[selectedCards.power] : null
             };
-
+            const turnData = game.playTurn(playerMove);
             const playerDrawCount = playerMove.power ? 2 : 1;
-
-            if (!isMoveConfirmed) {
-                 isMoveConfirmed = true;
-                 playerCardSlot.src = baseCard.image;
-                 playerCardSlot.classList.add('animate-reveal');
-                 playerHandContainer.querySelectorAll('.player-card-container').forEach(container => {
-                    if (!container.classList.contains('selected')) {
-                        container.querySelector('button').disabled = true;
-                    }
-                });
-                 await sleep(500); 
-            }
+            const aiDrawCount = turnData.aiMove.power ? 2 : 1;
 
             playButton.disabled = true;
             combineButton.disabled = true;
+            playerHandContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
 
-            const turnData = game.playTurn(playerMove);
-            const aiDrawCount = turnData.aiMove.power ? 2 : 1;
-            
-            aiCardSlot.src = turnData.aiMove.power ? 
-                `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` :
-                turnData.aiMove.base.image;
+            if (!isMoveConfirmed) {
+                playerCardSlot.src = playerMove.base.image;
+                playerCardSlot.classList.add('animate-reveal');
+            }
+            aiCardSlot.src = 'images/card-back.png';
             aiCardSlot.classList.add('animate-reveal');
+            
+            await sleep(400);
+            if (playerCardSlot.classList.contains('animate-reveal')) {
+                playerCardSlot.classList.remove('animate-reveal');
+            }
+            aiCardSlot.classList.remove('animate-reveal');
 
-            // Hide VS text and prepare for clash
-            const vsText = document.getElementById('vs-text');
             const clashText = document.getElementById('clash-text');
-            vsText.style.display = 'none';
-
-            // Clash animation
             playerCardSlot.classList.add('animate-clash-player');
             aiCardSlot.classList.add('animate-clash-ai');
             
-            // Text animation synchronized with swings
             const clashWords = ["BATO", "BATO", "PICK"];
             for (let i = 0; i < clashWords.length; i++) {
                 setTimeout(() => {
                     clashText.textContent = clashWords[i];
                     clashText.classList.remove('clash-text-pop');
-                    void clashText.offsetWidth; // Trigger reflow to restart animation
+                    void clashText.offsetWidth;
                     clashText.classList.add('clash-text-pop');
                 }, i * 400);
             }
             
-            await sleep(1400); // Wait for animations to finish
+            await sleep(1400);
 
-            // --- BATTLE FOCUS EFFECT START ---
-            clashText.classList.remove('clash-text-pop'); // Hide "PICK" text
+            clashText.classList.remove('clash-text-pop');
+            playerCardSlot.classList.remove('animate-clash-player');
+            aiCardSlot.classList.remove('animate-clash-ai');
+
+            aiCardSlot.classList.add('animate-flip');
+            setTimeout(() => {
+                const aiImageSrc = turnData.aiMove.power 
+                    ? `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` 
+                    : turnData.aiMove.base.image;
+                aiCardSlot.src = aiImageSrc;
+            }, 200);
+
+            aiCardSlot.addEventListener('animationend', () => {
+                aiCardSlot.classList.remove('animate-flip');
+            }, { once: true });
+
+            await sleep(400);
+            await sleep(1500);
+
             battleFocusOverlay.style.display = 'block';
             gameContainer.classList.add('highlighted');
-
-            // Show result message first
-            let message = turnData.result.winner === 'tie' ? "It's a tie!" : 
-                `${turnData.result.winner === 'player' ? game.playerName : 'AI'} wins and deals ${turnData.result.damageDealt} damage!`;
+            
+            const { winner, playerDamage, aiDamage } = turnData.result;
+            const damageDealt = winner === 'player' ? playerDamage : aiDamage;
+            let message = winner === 'tie' ? "It's a tie!" : `${winner === 'player' ? game.playerName : 'AI'} wins and deals ${damageDealt} damage!`;
             
             roundResultMsg.textContent = message;
             roundResultMsg.style.display = 'block';
 
-            await sleep(1500); // Let user read the message
+            await sleep(1500);
 
-            // Animate health update after showing the message
-            if (turnData.result.winner === 'player') {
-                await animateHealthUpdate('ai', turnData.result.damageDealt);
-            } else if (turnData.result.winner === 'ai') {
-                await animateHealthUpdate('player', turnData.result.damageDealt);
+            if (winner === 'player') {
+                await animateHealthUpdate('ai', playerDamage);
+            } else if (winner === 'ai') {
+                await animateHealthUpdate('player', aiDamage);
             }
             
-            await sleep(1000); // Wait after health drop
+            await sleep(1000);
 
-            // --- BATTLE FOCUS EFFECT END ---
             roundResultMsg.style.display = 'none';
             battleFocusOverlay.style.display = 'none';
             gameContainer.classList.remove('highlighted');
-            vsText.style.display = 'block';
 
             isMoveConfirmed = false;
             selectedCards = { base: null, power: null };
             aiCardSlot.src = 'images/ai-card.png';
             playerCardSlot.src = 'images/player-card.png';
-            playerCardSlot.classList.remove('animate-reveal', 'animate-clash-player');
-            aiCardSlot.classList.remove('animate-reveal', 'animate-clash-ai');
             
-            // Reset combine button state after turn
             combineButton.textContent = 'Combine';
             combineButton.style.background = '#FDFF6D';
 
@@ -412,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const modal = game.player.hp > 0 ? winModal : loseModal;
                 openModal(modal);
             } else {
-                 // --- DRAW PHASE & RESHUFFLE NOTIFICATION ---
                  const drawData = game.drawForEndOfTurn();
                  
                  if (drawData.playerReshuffled || drawData.aiReshuffled) {
@@ -445,7 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     animatePlayerDraw(game, drawData, playerDrawCount),
                     animateAiDraw(game, drawData, aiDrawCount)
                 ]);
-
+                
+                playerHandContainer.querySelectorAll('button').forEach(btn => btn.disabled = false);
                 updateButtonStates();
             }
             isActionInProgress = false;
@@ -472,7 +471,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (isStunned && card.type === 'power') {
                 cardButton.disabled = true;
-                cardButton.style.opacity = '0.5';
+                const img = cardButton.querySelector('img');
+                if (img) img.style.opacity = '0.5';
                 infoButton.disabled = true;
             }
 
