@@ -576,6 +576,10 @@ body {
         flex-wrap: wrap;
     }
 
+    .ai-container .card-back  {
+        min-height: 80px;
+    }
+
     .ai-container .card-back img, .game-container .gameplay img {
         height: 90px;
     }
@@ -682,10 +686,6 @@ body {
 
     .game-container .container .gameplay img {
         height: 100px;
-    }
-
-    .ai-container .card-back  {
-        min-height: 80px;
     }
 
     .info-button {
