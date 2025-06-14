@@ -305,7 +305,7 @@ body {
 }
 
 .player-card-container.selected {
-    transform: translateY(-15px);
+    transform: translateY(-10px);
 }
 
 .player-card-container.selected button:first-of-type {
@@ -317,9 +317,9 @@ body {
 .info-button {
     display: none;
     position: absolute;
-    bottom: -20px;
+    bottom: -25px;
     background: #6dccff;
-    padding: 8px 20px;
+    padding: 6px 15px;
     border-radius: 20px;
     font-size: 14px;
     width: auto;
@@ -561,7 +561,7 @@ body {
     }
 
     .ai-container .card-back img, .game-container .gameplay img {
-        height: 105px;
+        height: 90px;
     }
 
     .player-container .play-cards {
@@ -570,7 +570,7 @@ body {
     }
 
     .player-container .play-cards button img {
-        height: 125px;
+        height: 110px;
     }
 
     .ai-container .ai-stack {
@@ -639,7 +639,7 @@ body {
     }
 
     .ai-container .card-back img, .game-container .gameplay img {
-        height: 80px;
+        height: 60px;
     }
 
     .player-container .play-cards {
@@ -647,7 +647,7 @@ body {
     }
 
     .player-container .play-cards button img {
-        height: 120px;
+        height: 90px;
     }
 
     .health-points p, .game-container .gameplay p {
@@ -655,7 +655,17 @@ body {
     }
 
     .game-container .container .gameplay img {
-        height: 140px;
+        height: 100px;
+    }
+
+    .ai-container .card-back  {
+        min-height: 80px;
+    }
+
+    .info-button {
+        bottom: -22px;
+        padding: 5px 12px;
+        font-size: 12px;
     }
 }
 
