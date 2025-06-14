@@ -537,9 +537,12 @@ body {
     }
 
     /* GAMEPLAY PAGE */
-    .ai-container .name,
-    .player-container .name {
+    .ai-container .name {
         padding: 5px 0;
+    }
+
+    .player-container .name {
+        padding: 1px 0;
     }
 
     .ai-container .container,
@@ -581,7 +584,7 @@ body {
     }
 
     .ai-container .card-back img, .game-container .gameplay img {
-        height: 90px;
+        height: 80px;
     }
 
     .player-container .play-cards {
