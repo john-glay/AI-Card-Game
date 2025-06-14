@@ -254,7 +254,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Render player hand
             playerHandContainer.innerHTML = '';
-            gameInstance.player.hand.forEach((card, index) => {
+
+            const handCards = gameInstance.player.hand;
+            const row1 = document.createElement('div');
+            row1.classList.add('card-row');
+            const row2 = document.createElement('div');
+            row2.classList.add('card-row');
+
+            handCards.forEach((card, index) => {
                 const cardContainer = document.createElement('div');
                 cardContainer.classList.add('player-card-container');
                 cardContainer.dataset.cardIndex = index;
@@ -281,8 +288,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     showCardInfo(card);
                 });
 
-                playerHandContainer.appendChild(cardContainer);
+                // This logic creates the 2-card top row and 3-card bottom row
+                if (index < 2) {
+                    row1.appendChild(cardContainer);
+                } else {
+                    row2.appendChild(cardContainer);
+                }
             });
+
+            playerHandContainer.appendChild(row1);
+            playerHandContainer.appendChild(row2);
+
             updateButtonStates();
         };
 
