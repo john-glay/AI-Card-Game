@@ -694,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmRestartBtn = document.getElementById('confirmRestartBtn');
         if (confirmRestartBtn) {
             confirmRestartBtn.addEventListener('click', () => {
+                localStorage.removeItem('gameState');
                 location.reload();
             });
         }
