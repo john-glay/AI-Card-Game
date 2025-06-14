@@ -497,6 +497,22 @@ body {
         max-width: 576px;
     }
 
+    .rules .base {
+        padding: 20px;
+    }
+
+    .rules .buttons {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .rules .buttons a,
+    .rules .buttons button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     /* MAIN MENU */
     .menu h1 {
         font-size: 60px;
