@@ -40,6 +40,13 @@ button:active {
     box-shadow: none;
 }
 
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
 body {
     align-items: center;
     background-image: linear-gradient(to bottom, #FFA049, #FF4F63);
@@ -229,6 +236,43 @@ body {
     background-color: #FF5733;
 }
 
+.stack-container {
+    position: absolute;
+    margin: 20px;
+}
+
+.ai-container .stack-container {
+    top: 0;
+    right: 0;
+}
+
+.player-container .stack-container {
+    bottom: 0;
+    left: 0;
+}
+
+.ai-stack,
+.player-stack {
+    height: 205px;
+    display: block;
+}
+
+#ai-deck-count, #player-deck-count {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
 .ai-container .card-back,
 .player-container .play-cards {
     align-items: center;
@@ -242,23 +286,6 @@ body {
     height: 153px;
 }
 
-.ai-container .ai-stack,
-.player-container .player-stack {
-    position: absolute;
-    height: 205px;
-    margin: 20px;
-}
-
-.ai-container .ai-stack {
-    top: 0;
-    right: 0;
-}
-
-.player-container .player-stack {
-    bottom: 0;
-    left: 0;
-}
-
 .player-container .play-cards button {
     border: none;
     margin: 0;
@@ -267,7 +294,15 @@ body {
     background: transparent;
 }
 
+.player-container .play-cards button.selected {
+    transform: translateY(-15px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border: 4px solid #FDFF6D;
+    border-radius: 16px;
+}
+
 .game-container .gameplay {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -566,4 +601,65 @@ body {
     .game-container .container .gameplay img {
         height: 140px;
     }
+}
+
+#battle-focus-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    z-index: 4;
+}
+
+.game-container.highlighted {
+    position: relative;
+    z-index: 5;
+}
+
+#reshuffle-message {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px 50px;
+    background-image: linear-gradient(to top, #FFA049, #FF4F63);
+    border: 9px solid black;
+    border-radius: 20px;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px black;
+    text-transform: uppercase;
+    z-index: 6;
+}
+
+#round-result-message {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 7;
+    text-align: center;
+    display: none;
+}
+
+.game-container .gameplay {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }

@@ -17,9 +17,9 @@
         <div class="container">
             <p class="name">AI</p>
             <div class="health-points">
-                <p>30</p>
+                <p id="ai-hp-text">30</p>
                 <p style="margin: 0 20px 0 10px;">HP</p>
-                <progress class="progress" id="HealthPoints" value="30" max="30"></progress>
+                <progress class="progress" id="ai-hp-progress" value="30" max="30"></progress>
             </div>
             <div class="card-back">
                 <img src="images/card-back.png" alt="card-back">
@@ -28,7 +28,10 @@
                 <img src="images/card-back.png" alt="card-back">
                 <img src="images/card-back.png" alt="card-back">
             </div>
-            <img class="ai-stack" src="images/stack1.png" alt="stack1" draggable="false">
+            <div class="stack-container">
+                <img class="ai-stack" src="images/stack1.png" alt="stack1" draggable="false">
+                <div class="deck-count" id="ai-deck-count"></div>
+            </div>
         </div>
     </div>
     <div class="game-container">
@@ -38,35 +41,41 @@
                     <button data-modal-target="#pauseModal" id="openPauseModalBtn">Pause</button>
                 </div>
                 <div class="actions">
-                    <button style="background: #6DFF74; margin-bottom: 15px;">Play</button>
-                    <button style="background: #FDFF6D;">Combine</button>
+                    <button id="play-button" style="background: #6DFF74; margin-bottom: 15px;">Play</button>
+                    <button id="combine-button" style="background: #FDFF6D;">Combine</button>
                 </div>
             </div>
             <div class="gameplay">
-                <img src="images/ai-card.png" alt="ai-card" draggable="false">
+                <img id="ai-card-slot" src="images/ai-card.png" alt="ai-card" draggable="false">
                 <p>VS</p>
-                <img src="images/player-card.png" alt="player-card" draggable="false">
+                <img id="player-card-slot" src="images/player-card.png" alt="player-card" draggable="false">
+                <div id="round-result-message"></div>
             </div>
         </div>
     </div>
     <div class="player-container">
         <div class="container">
-            <img class="player-stack" src="images/stack2.png" alt="stack2" draggable="false">
+            <div class="stack-container">
+                <img class="player-stack" src="images/stack2.png" alt="stack2" draggable="false">
+                <div class="deck-count" id="player-deck-count">19</div>
+            </div>
             <div class="health-points">
-                <p>30</p>
+                <p id="player-hp-text">30</p>
                 <p style="margin: 0 20px 0 10px;">HP</p>
-                <progress class="progress" id="HealthPoints" value="30" max="30"></progress>
+                <progress class="progress" id="player-hp-progress" value="30" max="30"></progress>
             </div>
             <div class="play-cards">
-                <button><img src="images/paper.png" alt="card"></button>
-                <button><img src="images/scissors.png" alt="card"></button>
-                <button><img src="images/rock.png" alt="card"></button>
-                <button><img src="images/water.png" alt="card"></button>
-                <button><img src="images/fire.png" alt="card"></button>
+                <button data-card-index="0"><img src="images/rock.png" alt="Rock"></button><button data-card-index="1"><img src="images/paper.png" alt="Paper"></button><button data-card-index="2"><img src="images/scissors.png" alt="Scissors"></button><button data-card-index="3"><img src="images/water.png" alt="Water"></button><button data-card-index="4"><img src="images/fire.png" alt="Fire"></button>
             </div>
             <p class="name">Name</p>
         </div>
     </div>
+
+    <!-- BATTLE FOCUS OVERLAY -->
+    <div id="battle-focus-overlay"></div>
+
+    <!-- RESHUFFLE MESSAGE -->
+    <div id="reshuffle-message"></div>
 
     <!-- PAUSE MODAL -->
     <div id="pauseModal" class="modal">
@@ -76,6 +85,17 @@
             <button style="background: #6DFF74;">Resume</button>
             <button style="background: #FDFF6D; margin: 15px 0;">Restart</button>
             <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+        </div>
+    </div>
+
+    <!-- RESTART MODAL -->
+    <div id="restartModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Are you sure you want to restart?</h1>
+            <p style="font-family: 'Poppins', sans-serif; margin-bottom: 30px;">Your current progress will be lost.</p>
+            <button id="confirmRestartBtn" style="background: #FF6D6F; margin-bottom: 15px;">Yes, Restart</button>
+            <button class="close-btn" style="background: #6DFF74;">No, Cancel</button>
         </div>
     </div>
 
@@ -99,6 +119,7 @@
         </div>
     </div>
 
+    <script src="game.js" defer></script>
     <script src="script.js" defer></script>
 </body>
 </html>
