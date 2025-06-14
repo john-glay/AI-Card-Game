@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Disable right-click context menu globally
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
     // --- SETTINGS & AUDIO ---
     const settings = {
         volume: 0.5, // Default volume
@@ -773,6 +776,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const playerName = nameInput.value.trim();
             if (!playerName) {
                 openModal(document.getElementById('promptNameModal'));
+                return;
+            }
+            if (playerName.length < 2 || playerName.length > 10) {
+                openModal(document.getElementById('nameLengthModal'));
                 return;
             }
             

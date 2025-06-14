@@ -18,7 +18,7 @@
             <h1>Bato<br>Bato<br>Pick</h1>
             <div class="base">
                 <label for="name">Please enter your name</label>
-                <input type="text" name="name" id="name">
+                <input type="text" name="name" id="name" autocomplete="off" maxlength="10">
                 <button id="startGameBtn" style="background: #6DFF74;">Start playing</button>
                 <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
                 <button data-modal-target="#settingsModal" style="background: #A9A9A9; margin: 10px auto;">Settings</button>
@@ -42,6 +42,15 @@
         <div class="modal-content">
             <span class="close close-btn">&times;</span>
             <h1>Please enter<br>your name to start!</h1>
+            <button class="close-btn" style="background: #6DFF74;">OK</button>
+        </div>
+    </div>
+
+    <!-- NAME LENGTH ERROR MODAL -->
+    <div id="nameLengthModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Name must be<br>2-10 characters long.</h1>
             <button class="close-btn" style="background: #6DFF74;">OK</button>
         </div>
     </div>

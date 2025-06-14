@@ -5,10 +5,18 @@
     font-size: 18px;
     margin: 0;
     padding: 0;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard */
+    -webkit-touch-callout: none; /* iOS Safari */
 }
 
 a {
     text-decoration: none;
+}
+
+img {
+    pointer-events: none; /* Prevents dragging and context menu on images */
 }
 
 ol {
@@ -609,7 +617,7 @@ input:checked + .slider:before {
 }
 
 .tab-button.active {
-    border-bottom: 4px solid #FF6D6F;
+    border-bottom: 4px solid #962bc0;
     transform: none !important;
 }
 
