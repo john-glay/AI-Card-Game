@@ -83,8 +83,9 @@
             <span class="close close-btn">&times;</span>
             <h1>Pause</h1>
             <button style="background: #6DFF74;">Resume</button>
-            <button style="background: #FDFF6D; margin: 15px 0;">Restart</button>
-            <a href="index.html"><button style="background: #FF6D6F;">Return to Main Menu</button></a>
+            <button data-modal-target="#settingsModal" style="background: #A9A9A9; margin: 15px 0;">Settings</button>
+            <button style="background: #FDFF6D;">Restart</button>
+            <a href="index.html"><button style="background: #FF6D6F; margin-top: 15px;">Return to Main Menu</button></a>
         </div>
     </div>
 
@@ -114,6 +115,28 @@
             <img id="info-modal-img" src="" alt="Card Image">
             <h1 id="info-modal-name" style="font-size: 24px; margin-top: 20px; margin-bottom: 10px;"></h1>
             <p id="info-modal-desc" style="font-family: 'Poppins', sans-serif; text-align: center; max-width: 80%; margin: auto;"></p>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Settings</h1>
+            <div class="settings-container">
+                <div class="setting-item">
+                    <label for="bgm-volume">BG Music</label>
+                    <input type="range" id="bgm-volume" min="0" max="100" value="50" class="volume-slider">
+                </div>
+                <div class="setting-item">
+                    <label for="dark-mode-toggle">Dark Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <button class="close-btn" style="background: #6DFF74; margin-top: 20px;">Done</button>
         </div>
     </div>
 

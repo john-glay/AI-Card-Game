@@ -21,6 +21,7 @@
                 <input type="text" name="name" id="name">
                 <button id="startGameBtn" style="background: #6DFF74;">Start playing</button>
                 <a href="rules.html"><button style="background: #FDFF6D; margin: 10px auto;">How to play</button></a>
+                <button data-modal-target="#settingsModal" style="background: #A9A9A9; margin: 10px auto;">Settings</button>
                 <button data-modal-target="#exitModal" style="background: #FF6D6F;">Exit</button>
             </div>
         </div>
@@ -53,6 +54,28 @@
             <a href="gameplay.html"><button style="background: #6DFF74; margin-bottom: 15px;">Continue Playing</button></a>
             <button id="newGameBtn" style="background: #FDFF6D; margin-bottom: 15px;">Start New Game</button>
             <button class="close-btn" style="background: #FF6D6F;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close close-btn">&times;</span>
+            <h1>Settings</h1>
+            <div class="settings-container">
+                <div class="setting-item">
+                    <label for="bgm-volume">BG Music</label>
+                    <input type="range" id="bgm-volume" min="0" max="100" value="50" class="volume-slider">
+                </div>
+                <div class="setting-item">
+                    <label for="dark-mode-toggle">Dark Mode</label>
+                    <label class="switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <button class="close-btn" style="background: #6DFF74; margin-top: 20px;">Done</button>
         </div>
     </div>
 

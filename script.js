@@ -1,5 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- SETTINGS & AUDIO ---
+    const settings = {
+        volume: 0.5, // Default volume
+        darkMode: false,
+    };
+
+    const audio = {
+        bgm: new Audio('https://patrickdearteaga.com/audio/Child\'s%20Nightmare.ogg'),
+    };
+    audio.bgm.loop = true;
+    
+    const volumeSlider = document.getElementById('bgm-volume');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    function saveSettings() {
+        localStorage.setItem('gameSettings', JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+        const savedSettings = localStorage.getItem('gameSettings');
+        if (savedSettings) {
+            Object.assign(settings, JSON.parse(savedSettings));
+        }
+
+        // Apply settings to UI
+        volumeSlider.value = settings.volume * 100;
+        audio.bgm.volume = settings.volume;
+        darkModeToggle.checked = settings.darkMode;
+
+        // Apply dark mode
+        if (settings.darkMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        
+        // Handle BGM
+        if (settings.volume > 0) {
+            audio.bgm.play().catch(() => {});
+        } else {
+            audio.bgm.pause();
+        }
+    }
+
+    volumeSlider.addEventListener('input', () => {
+        settings.volume = volumeSlider.value / 100;
+        audio.bgm.volume = settings.volume;
+        
+        if (settings.volume > 0 && audio.bgm.paused) {
+            audio.bgm.play().catch(()=>{});
+        } else if (settings.volume === 0) {
+            audio.bgm.pause();
+        }
+        saveSettings();
+    });
+
+    darkModeToggle.addEventListener('change', () => {
+        settings.darkMode = darkModeToggle.checked;
+        document.body.classList.toggle('dark-mode');
+        saveSettings();
+    });
+
     // --- GAME INITIALIZATION & UI RENDERING ---
     // Only run game logic on the gameplay page
     if (document.querySelector('.game-container')) {
@@ -105,7 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // --- CONFIRM/COMBINE LOGIC ---
                 const baseCard = game.player.hand[selectedCards.base];
                 const powerCard = game.player.hand[selectedCards.power];
-                if (!baseCard || !powerCard) return;
+                if (!baseCard || !powerCard) {
+                    isActionInProgress = false;
+                    return;
+                };
                 isMoveConfirmed = true;
 
                 const combinedImageSrc = `images/${baseCard.name.toLowerCase()}-${powerCard.name.toLowerCase()}.png`;
@@ -169,6 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let message = turnData.result.winner === 'tie' ? "It's a tie!" : 
                 `${turnData.result.winner === 'player' ? game.playerName : 'AI'} wins and deals ${turnData.result.damageDealt} damage!`;
+            
+            if (turnData.result.damageDealt > 0) {
+                // Assuming playSfx(audio.damage) is called elsewhere in the code
+            }
+
             roundResultMsg.textContent = message;
             roundResultMsg.style.display = 'block';
 
@@ -479,4 +549,6 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(modal);
         });
     }
+
+    loadSettings();
 }); 
