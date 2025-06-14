@@ -28,29 +28,52 @@ const initialDeckConfig = [
 
 // --- Game Class ---
 class Game {
-    constructor(playerName) {
-        this.playerName = playerName;
-        this.player = {
-            hp: 30,
-            deck: [],
-            hand: [],
-            discard: [],
-            isStunned: false,
-            reshuffleReason: null,
-            selectedCard: { base: null, power: null }
-        };
-        this.ai = {
-            hp: 30,
-            deck: [],
-            hand: [],
-            discard: [],
-            isStunned: false,
-            reshuffleReason: null
-        };
-        this.playerHistory = [];
-        this.isGameOver = false;
+    constructor(playerName, savedState = null) {
+        if (savedState) {
+            // Load game from saved state
+            this.playerName = savedState.playerName;
+            this.player = savedState.player;
+            this.ai = savedState.ai;
+            this.playerHistory = savedState.playerHistory;
+            this.isGameOver = savedState.isGameOver;
+            this.turnCount = savedState.turnCount || 0;
+        } else {
+            // Setup a new game
+            this.playerName = playerName;
+            this.player = {
+                hp: 30,
+                deck: [],
+                hand: [],
+                discard: [],
+                isStunned: false,
+                reshuffleReason: null,
+                selectedCard: { base: null, power: null }
+            };
+            this.ai = {
+                hp: 30,
+                deck: [],
+                hand: [],
+                discard: [],
+                isStunned: false,
+                reshuffleReason: null
+            };
+            this.playerHistory = [];
+            this.isGameOver = false;
+            this.turnCount = 0;
+    
+            this._setupGame();
+        }
+    }
 
-        this._setupGame();
+    getGameState() {
+        return {
+            playerName: this.playerName,
+            player: this.player,
+            ai: this.ai,
+            playerHistory: this.playerHistory,
+            isGameOver: this.isGameOver,
+            turnCount: this.turnCount
+        };
     }
 
     _setupGame() {
@@ -108,6 +131,7 @@ class Game {
 
     // --- GAMEPLAY & TURN LOGIC ---
     playTurn(playerMove) {
+        this.turnCount++;
         const aiMove = this._selectMoveGBFS();
         
         this.playerHistory.push(playerMove.base.name);

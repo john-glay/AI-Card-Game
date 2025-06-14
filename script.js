@@ -3,8 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GAME INITIALIZATION & UI RENDERING ---
     // Only run game logic on the gameplay page
     if (document.querySelector('.game-container')) {
+        const savedStateJSON = localStorage.getItem('gameState');
         const playerName = localStorage.getItem('playerName') || 'Player';
-        const game = new Game(playerName);
+        let game;
+
+        if (savedStateJSON) {
+            const savedState = JSON.parse(savedStateJSON);
+            game = new Game(playerName, savedState);
+            // Once loaded, the saved game should be cleared to prevent accidental reloading
+            localStorage.removeItem('gameState'); 
+        } else {
+            game = new Game(playerName);
+        }
 
         // --- STATE ---
         let selectedCards = { base: null, power: null };
@@ -253,6 +263,31 @@ document.addEventListener('DOMContentLoaded', () => {
         combineButton.addEventListener('click', handleCombineUndoClick);
 
         // --- PAUSE/RESTART & GAME OVER LOGIC ---
+        const returnToMenuBtn = document.querySelector('#pauseModal a[href="index.html"]');
+        if(returnToMenuBtn) {
+            returnToMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default link behavior
+    
+                if (game.turnCount > 0) {
+                    // Save game state
+                    const gameState = game.getGameState();
+                    localStorage.setItem('gameState', JSON.stringify(gameState));
+        
+                    // Show 'Game Saved' modal
+                    const savedModal = document.getElementById('gameSavedModal');
+                    openModal(savedModal);
+        
+                    // Redirect after a delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    // If no turns have been played, just go back to the menu without saving.
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
         const restartBtn = document.querySelector('#pauseModal button[style*="#FDFF6D"]');
         if (restartBtn) {
             restartBtn.addEventListener('click', () => {
@@ -272,6 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
         playAgainBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 location.reload();
+            });
+        });
+
+        const returnToMenuGameOverBtns = document.querySelectorAll('#winModal a, #loseModal a');
+        returnToMenuGameOverBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                localStorage.removeItem('gameState'); // Game is over, no need to save
             });
         });
     }
@@ -307,6 +349,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- NAME & GAME START LOGIC ---
     const nameInput = document.getElementById('name');
     const startGameBtn = document.getElementById('startGameBtn');
+    
+    // Check for saved game on main menu load
+    const savedGame = localStorage.getItem('gameState');
+    if (savedGame && startGameBtn) {
+        startGameBtn.textContent = 'Continue Playing';
+    }
 
     // Restore name from localStorage on the main menu
     if (nameInput) {
@@ -325,13 +373,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startGameBtn && nameInput) {
         startGameBtn.addEventListener('click', () => {
             const playerName = nameInput.value.trim();
-            if (playerName) {
-                // The name is already saved by the input event listener
-                window.location.href = 'gameplay.html';
-            } else {
-                const modal = document.getElementById('promptNameModal');
-                openModal(modal);
+            if (!playerName) {
+                openModal(document.getElementById('promptNameModal'));
+                return;
             }
+            
+            localStorage.setItem('playerName', playerName);
+
+            if (localStorage.getItem('gameState')) {
+                openModal(document.getElementById('continueGameModal'));
+            } else {
+                window.location.href = 'gameplay.html';
+            }
+        });
+    }
+
+    const newGameBtn = document.getElementById('newGameBtn');
+    if (newGameBtn) {
+        newGameBtn.addEventListener('click', () => {
+            localStorage.removeItem('gameState');
+            window.location.href = 'gameplay.html';
         });
     }
 
