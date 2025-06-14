@@ -345,15 +345,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 turnData.aiMove.base.image;
             aiCardSlot.classList.add('animate-reveal');
 
-            await sleep(500);
+            // Hide VS text and prepare for clash
+            const vsText = document.getElementById('vs-text');
+            const clashText = document.getElementById('clash-text');
+            vsText.style.display = 'none';
 
             // Clash animation
-            playerCardSlot.classList.add('animate-clash');
-            aiCardSlot.classList.add('animate-clash');
+            playerCardSlot.classList.add('animate-clash-player');
+            aiCardSlot.classList.add('animate-clash-ai');
             
-            await sleep(600); // Wait for clash to be visually impactful
+            // Text animation synchronized with swings
+            const clashWords = ["BATO", "BATO", "PICK"];
+            for (let i = 0; i < clashWords.length; i++) {
+                setTimeout(() => {
+                    clashText.textContent = clashWords[i];
+                    clashText.classList.remove('clash-text-pop');
+                    void clashText.offsetWidth; // Trigger reflow to restart animation
+                    clashText.classList.add('clash-text-pop');
+                }, i * 400);
+            }
+            
+            await sleep(1400); // Wait for animations to finish
 
             // --- BATTLE FOCUS EFFECT START ---
+            clashText.classList.remove('clash-text-pop'); // Hide "PICK" text
             battleFocusOverlay.style.display = 'block';
             gameContainer.classList.add('highlighted');
 
@@ -379,13 +394,14 @@ document.addEventListener('DOMContentLoaded', () => {
             roundResultMsg.style.display = 'none';
             battleFocusOverlay.style.display = 'none';
             gameContainer.classList.remove('highlighted');
+            vsText.style.display = 'block';
 
             isMoveConfirmed = false;
             selectedCards = { base: null, power: null };
             aiCardSlot.src = 'images/ai-card.png';
             playerCardSlot.src = 'images/player-card.png';
-            playerCardSlot.classList.remove('animate-reveal', 'animate-clash');
-            aiCardSlot.classList.remove('animate-reveal', 'animate-clash');
+            playerCardSlot.classList.remove('animate-reveal', 'animate-clash-player');
+            aiCardSlot.classList.remove('animate-reveal', 'animate-clash-ai');
             
             // Reset combine button state after turn
             combineButton.textContent = 'Combine';
