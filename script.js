@@ -103,6 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
             playButton.disabled = true;
             combineButton.disabled = true;
 
+            const playerDeckCountEl = document.getElementById('player-deck-count');
+            const aiDeckCountEl = document.getElementById('ai-deck-count');
+            const totalCards = 24; // Cards in initial deck
+
             const aiHandContainer = document.querySelector('.ai-container .card-back');
             const row1 = document.createElement('div');
             row1.classList.add('card-row');
@@ -159,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 await sleep(150); // Stagger the dealing of each card
+                
+                // Decrement deck count after card is "dealt"
+                const newDeckCount = totalCards - (i + 1);
+                playerDeckCountEl.textContent = newDeckCount;
+                aiDeckCountEl.textContent = newDeckCount;
             }
             
             // Re-enable buttons
@@ -303,6 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 power: selectedCards.power !== null ? game.player.hand[selectedCards.power] : null
             };
 
+            const playerDrawCount = playerMove.power ? 2 : 1;
+
             if (!isMoveConfirmed) {
                  isMoveConfirmed = true;
                  playerCardSlot.src = baseCard.image;
@@ -319,6 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
             combineButton.disabled = true;
 
             const turnData = game.playTurn(playerMove);
+            const aiDrawCount = turnData.aiMove.power ? 2 : 1;
             
             aiCardSlot.src = turnData.aiMove.power ? 
                 `images/${turnData.aiMove.base.name.toLowerCase()}-${turnData.aiMove.power.name.toLowerCase()}.png` :
@@ -378,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                  // --- DRAW PHASE & RESHUFFLE NOTIFICATION ---
                  const drawData = game.drawForEndOfTurn();
+                 
                  if (drawData.playerReshuffled || drawData.aiReshuffled) {
                     const reshuffleMessageEl = document.getElementById('reshuffle-message');
                     
@@ -403,8 +416,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     battleFocusOverlay.style.display = 'none';
                     reshuffleMessageEl.style.display = 'none';
                 }
+                
+                await Promise.all([
+                    animatePlayerDraw(game, drawData, playerDrawCount),
+                    animateAiDraw(game, drawData, aiDrawCount)
+                ]);
 
-                 renderUI(game);
+                updateButtonStates();
             }
             isActionInProgress = false;
         };
@@ -414,6 +432,117 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('info-modal-name').textContent = card.name;
             document.getElementById('info-modal-desc').textContent = card.description;
             openModal(cardInfoModal);
+        };
+
+        const createPlayerCardElement = (card, index, isStunned) => {
+            const cardContainer = document.createElement('div');
+            cardContainer.classList.add('player-card-container');
+            cardContainer.dataset.cardIndex = index;
+
+            const cardButton = document.createElement('button');
+            cardButton.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
+
+            const infoButton = document.createElement('button');
+            infoButton.classList.add('info-button');
+            infoButton.textContent = 'Info';
+            
+            if (isStunned && card.type === 'power') {
+                cardButton.disabled = true;
+                cardButton.style.opacity = '0.5';
+                infoButton.disabled = true;
+            }
+
+            cardContainer.appendChild(cardButton);
+            cardContainer.appendChild(infoButton);
+
+            cardButton.addEventListener('click', () => updateSelectedCards(card, cardContainer, index));
+            infoButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showCardInfo(card);
+            });
+
+            return cardContainer;
+        }
+
+        const animatePlayerDraw = async (gameInstance, drawData, playerDrawCount) => {
+            const playerHandContainer = document.querySelector('.player-container .play-cards');
+            const playerDeckCountEl = document.getElementById('player-deck-count');
+            const playerHand = gameInstance.player.hand;
+        
+            const row1 = document.createElement('div');
+            row1.classList.add('card-row');
+            const row2 = document.createElement('div');
+            row2.classList.add('card-row');
+        
+            playerHandContainer.innerHTML = '';
+            playerHandContainer.appendChild(row1);
+            playerHandContainer.appendChild(row2);
+        
+            if (drawData.playerReshuffled) {
+                playerDeckCountEl.textContent = 24;
+                for (let i = 0; i < playerHand.length; i++) {
+                    await sleep(150);
+                    playerDeckCountEl.textContent = 24 - (i + 1);
+                    const cardContainer = createPlayerCardElement(playerHand[i], i, gameInstance.player.isStunned);
+                    cardContainer.classList.add('card-dealt');
+                    if (i < 2) { row1.appendChild(cardContainer); } 
+                    else { row2.appendChild(cardContainer); }
+                }
+            } else {
+                const oldPlayerCardCount = 5 - playerDrawCount;
+                for (let i = 0; i < oldPlayerCardCount; i++) {
+                    const cardContainer = createPlayerCardElement(playerHand[i], i, gameInstance.player.isStunned);
+                    if (i < 2) { row1.appendChild(cardContainer); } 
+                    else { row2.appendChild(cardContainer); }
+                }
+        
+                for (let i = 0; i < playerDrawCount; i++) {
+                    await sleep(200);
+                    playerDeckCountEl.textContent = parseInt(playerDeckCountEl.textContent) - 1;
+                    const cardIndex = oldPlayerCardCount + i;
+                    const cardContainer = createPlayerCardElement(playerHand[cardIndex], cardIndex, gameInstance.player.isStunned);
+                    cardContainer.classList.add('card-dealt');
+                    if (cardIndex < 2) { row1.appendChild(cardContainer); } 
+                    else { row2.appendChild(cardContainer); }
+                }
+            }
+            playerDeckCountEl.textContent = gameInstance.player.deck.length;
+        };
+        
+        const animateAiDraw = async (gameInstance, drawData, aiDrawCount) => {
+            const aiHandContainer = document.querySelector('.ai-container .card-back');
+            const aiDeckCountEl = document.getElementById('ai-deck-count');
+            const aiHand = gameInstance.ai.hand;
+        
+            aiHandContainer.innerHTML = '';
+        
+            if (drawData.aiReshuffled) {
+                aiDeckCountEl.textContent = 24;
+                for (let i = 0; i < aiHand.length; i++) {
+                    await sleep(150);
+                    aiDeckCountEl.textContent = 24 - (i + 1);
+                    const aiCardImg = document.createElement('img');
+                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.alt = 'card-back';
+                    aiCardImg.classList.add('card-dealt');
+                    aiHandContainer.appendChild(aiCardImg);
+                }
+            } else {
+                const oldAiCardCount = 5 - aiDrawCount;
+                for (let i = 0; i < oldAiCardCount; i++) {
+                    aiHandContainer.innerHTML += `<img src="images/card-back.png" alt="card-back">`;
+                }
+                for (let i = 0; i < aiDrawCount; i++) {
+                    await sleep(200);
+                    aiDeckCountEl.textContent = parseInt(aiDeckCountEl.textContent) - 1;
+                    const aiCardImg = document.createElement('img');
+                    aiCardImg.src = 'images/card-back.png';
+                    aiCardImg.alt = 'card-back';
+                    aiCardImg.classList.add('card-dealt');
+                    aiHandContainer.appendChild(aiCardImg);
+                }
+            }
+            aiDeckCountEl.textContent = gameInstance.ai.deck.length;
         };
 
         const renderUI = (gameInstance) => {
@@ -447,31 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row2.classList.add('card-row');
 
             handCards.forEach((card, index) => {
-                const cardContainer = document.createElement('div');
-                cardContainer.classList.add('player-card-container');
-                cardContainer.dataset.cardIndex = index;
-
-                const cardButton = document.createElement('button');
-                cardButton.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
-
-                const infoButton = document.createElement('button');
-                infoButton.classList.add('info-button');
-                infoButton.textContent = 'Info';
-
-                if (game.player.isStunned && card.type === 'power') {
-                    cardButton.disabled = true;
-                    cardButton.style.opacity = '0.5';
-                    infoButton.disabled = true;
-                }
-
-                cardContainer.appendChild(cardButton);
-                cardContainer.appendChild(infoButton);
-
-                cardButton.addEventListener('click', () => updateSelectedCards(card, cardContainer, index));
-                infoButton.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showCardInfo(card);
-                });
+                const cardContainer = createPlayerCardElement(card, index, gameInstance.player.isStunned);
 
                 // This logic creates the 2-card top row and 3-card bottom row
                 if (index < 2) {
@@ -496,8 +601,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('player-hp-progress').value = game.player.hp;
             document.getElementById('ai-hp-progress').max = 30;
             document.getElementById('player-hp-progress').max = 30;
-            document.getElementById('ai-deck-count').textContent = game.ai.deck.length;
-            document.getElementById('player-deck-count').textContent = game.player.deck.length;
+            
+            const totalCards = 24;
+            document.getElementById('ai-deck-count').textContent = totalCards;
+            document.getElementById('player-deck-count').textContent = totalCards;
 
             // Then animate the cards
             dealInitialCards();
