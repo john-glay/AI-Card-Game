@@ -748,8 +748,14 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('is-closing');
         modal.classList.remove('visible');
 
+        const isGameOverModal = modal.id === 'winModal' || modal.id === 'loseModal';
+
         modal.addEventListener('transitionend', () => {
             modal.classList.remove('is-closing');
+            if (isGameOverModal) {
+                localStorage.removeItem('gameState');
+                window.location.href = '../index.html';
+            }
         }, { once: true });
     }
 
