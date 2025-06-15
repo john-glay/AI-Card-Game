@@ -118,4 +118,12 @@ function WIN_PROB(aiCard, predictedCard):
 ## How to Launch
 1.  Clone this repository to your local machine.
 2.  Open the `index.html` file in your preferred web browser.
-3.  Enter your name and start playing! 
+3.  Enter your name and start playing!
+
+## Music and Sound
+
+The background music used in this game, "Child's Nightmare," was composed by Patrick de Arteaga. The track is licensed under an international Creative Commons Attribution 4.0 license, allowing for free use with appropriate credit.
+
+**Reference:**
+
+de Arteaga, P. (n.d.). *Child's Nightmare* [Audio file]. Patrick de Arteaga. Retrieved June 15, 2025, from https://patrickdearteaga.com/audio/Child's%20Nightmare.ogg 
