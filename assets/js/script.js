@@ -1,26 +1,36 @@
+// This script runs when the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Disable right-click context menu globally
+    // Disable right-click context menu globally to prevent image saving, etc.
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     // --- SETTINGS & AUDIO ---
+    // Global settings object, loaded from localStorage.
     const settings = {
         volume: 0.5, // Default volume
         darkMode: false,
     };
 
+    // Audio elements for the game.
     const audio = {
         bgm: new Audio('https://patrickdearteaga.com/audio/Child\'s%20Nightmare.ogg'),
     };
     audio.bgm.loop = true;
     
+    // UI elements for settings.
     const volumeSlider = document.getElementById('bgm-volume');
     const darkModeToggle = document.getElementById('dark-mode-toggle');
 
+    /**
+     * Saves the current settings to localStorage.
+     */
     function saveSettings() {
         localStorage.setItem('gameSettings', JSON.stringify(settings));
     }
 
+    /**
+     * Loads settings from localStorage and applies them to the UI.
+     */
     function loadSettings() {
         const savedSettings = localStorage.getItem('gameSettings');
         if (savedSettings) {
@@ -36,14 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
             darkModeToggle.checked = settings.darkMode;
         }
 
-        // Apply dark mode
+        // Apply dark mode class to the body.
         if (settings.darkMode) {
             document.body.classList.add('dark-mode');
         } else {
             document.body.classList.remove('dark-mode');
         }
         
-        // Handle BGM
+        // Handle BGM playback based on volume.
         if (settings.volume > 0 && audio.bgm.paused) {
             audio.bgm.play().catch(() => {});
         } else if (settings.volume === 0) {
@@ -51,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Event listener for the volume slider.
     if(volumeSlider) {
         volumeSlider.addEventListener('input', () => {
             settings.volume = volumeSlider.value / 100;
@@ -65,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Event listener for the dark mode toggle.
     if(darkModeToggle) {
         darkModeToggle.addEventListener('change', () => {
             settings.darkMode = darkModeToggle.checked;
@@ -74,12 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- GAME INITIALIZATION & UI RENDERING ---
-    // Only run game logic on the gameplay page
+    // The following logic only runs on the gameplay.html page.
     if (document.querySelector('.game-container')) {
+        // Load game state or player name from localStorage.
         const savedStateJSON = localStorage.getItem('gameState');
         const playerName = localStorage.getItem('playerName') || 'Player';
         let game;
 
+        // Initialize the Game class, either with saved data or as a new game.
         if (savedStateJSON) {
             const savedState = JSON.parse(savedStateJSON);
             game = new Game(playerName, savedState);
@@ -87,12 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
             game = new Game(playerName);
         }
 
-        // --- STATE ---
+        // --- STATE VARIABLES ---
+        // Manages the player's current card selections.
         let selectedCards = { base: null, power: null };
+        // Tracks if the player has confirmed their move (e.g., after combining).
         let isMoveConfirmed = false;
+        // Prevents multiple actions from running simultaneously.
         let isActionInProgress = false;
         
-        // --- UI ELEMENTS ---
+        // --- UI ELEMENT REFERENCES ---
         const gameContainer = document.querySelector('.game-container');
         const playerHandContainer = document.querySelector('.player-container .play-cards');
         const playButton = document.getElementById('play-button');
@@ -105,8 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const winModal = document.getElementById('winModal');
         const loseModal = document.getElementById('loseModal');
 
+        // Utility function for creating delays.
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+        /**
+         * Animates the initial dealing of cards to both players.
+         * @param {Game} gameInstance - The current game instance.
+         */
         const dealInitialCards = async (gameInstance) => {
             // Disable buttons during deal
             playButton.disabled = true;
@@ -178,6 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonStates();
         };
 
+        /**
+         * Animates the health bar and text when a player takes damage.
+         * @param {'player' | 'ai'} target - The target of the damage.
+         * @param {number} damage - The amount of damage taken.
+         */
         const animateHealthUpdate = async (target, damage) => {
             if (damage <= 0) return;
 
@@ -209,6 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // --- BUTTON STATE LOGIC ---
+        /**
+         * Updates the enabled/disabled state of the Play and Combine buttons.
+         */
         const updateButtonStates = () => {
             const hasBase = selectedCards.base !== null;
             const hasPower = selectedCards.power !== null;
@@ -225,6 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // --- CARD SELECTION LOGIC ---
+        /**
+         * Handles the logic for selecting and deselecting cards in the player's hand.
+         * @param {object} card - The card object that was clicked.
+         * @param {HTMLElement} cardContainer - The HTML element of the card container.
+         * @param {number} index - The index of the card in the hand.
+         */
         const updateSelectedCards = (card, cardContainer, index) => {
             if (isMoveConfirmed) return; // Lock selections after confirmation
 
@@ -253,6 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // --- ACTION HANDLERS ---
+        /**
+         * Handles the "Combine" and "Undo" button clicks.
+         */
         const handleCombineUndoClick = () => {
             if (isActionInProgress) return;
             isActionInProgress = true;
@@ -304,6 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
             isActionInProgress = false;
         };
 
+        /**
+         * Handles the main "Play" button click, initiating the turn resolution.
+         */
         const handlePlayTurn = async () => {
             if (isActionInProgress) return;
             isActionInProgress = true;
@@ -478,6 +520,10 @@ document.addEventListener('DOMContentLoaded', () => {
             isActionInProgress = false;
         };
 
+        /**
+         * Opens the card info modal with details of the selected card.
+         * @param {object} card - The card to display info for.
+         */
         const showCardInfo = (card) => {
             document.getElementById('info-modal-img').src = card.image;
             document.getElementById('info-modal-name').textContent = card.name;
@@ -485,6 +531,13 @@ document.addEventListener('DOMContentLoaded', () => {
             openModal(cardInfoModal);
         };
 
+        /**
+         * Creates the HTML element for a player's card, including its buttons.
+         * @param {object} card - The card object.
+         * @param {number} index - The index of the card in the hand.
+         * @param {boolean} isStunned - Whether the player is currently stunned.
+         * @returns {HTMLElement} The complete card container element.
+         */
         const createPlayerCardElement = (card, index, isStunned) => {
             const cardContainer = document.createElement('div');
             cardContainer.classList.add('player-card-container');
@@ -516,6 +569,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return cardContainer;
         }
 
+        /**
+         * Animates the drawing of new cards for the player.
+         * @param {Game} gameInstance - The current game instance.
+         * @param {object} drawData - Data about reshuffles.
+         * @param {number} playerDrawCount - The number of cards the player needs to draw.
+         */
         const animatePlayerDraw = async (gameInstance, drawData, playerDrawCount) => {
             const playerHandContainer = document.querySelector('.player-container .play-cards');
             const playerDeckCountEl = document.getElementById('player-deck-count');
@@ -561,6 +620,12 @@ document.addEventListener('DOMContentLoaded', () => {
             playerDeckCountEl.textContent = gameInstance.player.deck.length;
         };
         
+        /**
+         * Animates the drawing of new cards for the AI.
+         * @param {Game} gameInstance - The current game instance.
+         * @param {object} drawData - Data about reshuffles.
+         * @param {number} aiDrawCount - The number of cards the AI needs to draw.
+         */
         const animateAiDraw = async (gameInstance, drawData, aiDrawCount) => {
             const aiHandContainer = document.querySelector('.ai-container .card-back');
             const aiDeckCountEl = document.getElementById('ai-deck-count');
@@ -597,6 +662,10 @@ document.addEventListener('DOMContentLoaded', () => {
             aiDeckCountEl.textContent = gameInstance.ai.deck.length;
         };
 
+        /**
+         * Renders the entire UI based on the current game state. (Used for initial load with saved data)
+         * @param {Game} gameInstance - The current game instance.
+         */
         const renderUI = (gameInstance) => {
             // Render names and HP
             document.querySelector('.player-container .name').textContent = gameInstance.playerName;
@@ -644,6 +713,10 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonStates();
         };
 
+        /**
+         * Sets up the non-animated parts of the UI on initial load.
+         * @param {Game} gameInstance - The current game instance.
+         */
         const setupStaticUI = (gameInstance) => {
             document.querySelector('.player-container .name').textContent = gameInstance.playerName;
             document.getElementById('ai-hp-text').textContent = gameInstance.ai.hp;
@@ -719,9 +792,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- MODAL HANDLING ---
+    // General logic for opening and closing all modals on the site.
     const openModalButtons = document.querySelectorAll('[data-modal-target]');
     const modals = document.querySelectorAll('.modal');
 
+    // Add event listeners to all buttons that open modals.
     openModalButtons.forEach(button => {
         button.addEventListener('click', () => {
             const modal = document.querySelector(button.dataset.modalTarget);
@@ -729,6 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Add event listeners to all designated close buttons.
     const allCloseButtons = document.querySelectorAll('.close-btn');
     allCloseButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -737,11 +814,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    /**
+     * Opens a modal.
+     * @param {HTMLElement} modal - The modal element to open.
+     */
     function openModal(modal) {
         if (modal == null || modal.classList.contains('is-closing')) return;
         modal.classList.add('visible');
     }
 
+    /**
+     * Closes a modal.
+     * @param {HTMLElement} modal - The modal element to close.
+     */
     function closeModal(modal) {
         if (modal == null || !modal.classList.contains('visible')) return;
         
@@ -750,6 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isGameOverModal = modal.id === 'winModal' || modal.id === 'loseModal';
 
+        // Clean up classes after the transition ends.
         modal.addEventListener('transitionend', () => {
             modal.classList.remove('is-closing');
             if (isGameOverModal) {
@@ -759,30 +845,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { once: true });
     }
 
-    // --- NAME & GAME START LOGIC ---
+    // --- MAIN MENU LOGIC (index.html) ---
     const nameInput = document.getElementById('name');
     const startGameBtn = document.getElementById('startGameBtn');
     
-    // Check for saved game on main menu load
+    // Check for a saved game on main menu load to change button text.
     const savedGame = localStorage.getItem('gameState');
     if (savedGame && startGameBtn) {
         startGameBtn.textContent = 'Continue Playing';
     }
 
-    // Restore name from localStorage on the main menu
+    // Restore player name from localStorage on the main menu.
     if (nameInput) {
         const savedName = localStorage.getItem('playerName');
         if (savedName) {
             nameInput.value = savedName;
         }
 
-        // Add real-time saving on every input change
+        // Add real-time saving of the player's name on input.
         nameInput.addEventListener('input', () => {
             localStorage.setItem('playerName', nameInput.value);
         });
     }
 
-    // Handle start game button click
+    // Handle the "Start Playing" / "Continue Playing" button click.
     if (startGameBtn && nameInput) {
         startGameBtn.addEventListener('click', () => {
             const playerName = nameInput.value.trim();
@@ -797,14 +883,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             localStorage.setItem('playerName', playerName);
 
+            // If a game is saved, show the "Continue/New Game" modal.
             if (localStorage.getItem('gameState')) {
                 openModal(document.getElementById('continueGameModal'));
             } else {
+                // Otherwise, start a new game immediately.
                 window.location.href = 'pages/gameplay.html';
             }
         });
     }
 
+    // Handle "Start New Game" button in the continue modal.
     const newGameBtn = document.getElementById('newGameBtn');
     if (newGameBtn) {
         newGameBtn.addEventListener('click', () => {
@@ -813,7 +902,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Display player name on gameplay screen
+    // Display player name on the gameplay screen.
     const playerNameDisplay = document.querySelector('.player-container .name');
     if (playerNameDisplay) {
         const savedName = localStorage.getItem('playerName');
@@ -822,6 +911,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Allow closing a modal by clicking on the background overlay.
     window.addEventListener('click', event => {
         modals.forEach(modal => {
             if (event.target == modal) {
@@ -830,6 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Handle exit confirmation.
     const confirmExitBtn = document.getElementById("confirmExitBtn");
     if (confirmExitBtn) {
         confirmExitBtn.addEventListener('click', () => {
@@ -837,6 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handle cancel exit.
     const cancelExitBtn = document.getElementById("cancelExitBtn");
     if(cancelExitBtn) {
         cancelExitBtn.addEventListener('click', () => {
@@ -845,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handle resume button in the pause modal.
     const resumeBtn = document.querySelector('#pauseModal button[style*="#6DFF74"]');
     if (resumeBtn) {
         resumeBtn.addEventListener('click', () => {
@@ -853,9 +946,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Load settings when the script starts.
     loadSettings();
 
-    // --- HOW TO PLAY MODAL TABS ---
+    // --- 'HOW TO PLAY' MODAL TAB LOGIC ---
     const howToPlayModal = document.getElementById('howToPlayModal');
     if (howToPlayModal) {
         const tabButtons = howToPlayModal.querySelectorAll('.tab-button');
@@ -865,16 +959,17 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => {
                 const targetTab = document.querySelector(button.dataset.tabTarget);
 
-                // Update button active state
+                // Update button active state.
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Update content active state
+                // Update content active state.
                 tabContents.forEach(content => content.classList.remove('active'));
                 targetTab.classList.add('active');
             });
         });
 
+        // Add click-to-zoom functionality for cards in the 'How to Play' library.
         const cardViewModal = document.getElementById('cardViewModal');
         if (cardViewModal) {
             const zoomedCardImg = document.getElementById('zoomed-card-img');

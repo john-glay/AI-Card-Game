@@ -1,22 +1,26 @@
 // --- Card & Deck Definitions ---
 
+// Defines the types of cards available in the game.
 const cardTypes = {
     BASE: 'base',
     POWER: 'power'
 };
 
+// Defines the properties of the base cards (Rock, Paper, Scissors).
 const baseCards = {
     ROCK: { name: 'Rock', type: cardTypes.BASE, damage: 4, image: '../assets/images/rock.png', description: 'Deals 4 damage. Wins against Scissors.' },
     PAPER: { name: 'Paper', type: cardTypes.BASE, damage: 3, image: '../assets/images/paper.png', description: 'Deals 3 damage. Wins against Rock.' },
     SCISSORS: { name: 'Scissors', type: cardTypes.BASE, damage: 5, image: '../assets/images/scissors.png', description: 'Deals 5 damage. Wins against Paper.' }
 };
 
+// Defines the properties of the power-up cards.
 const powerUps = {
     FIRE: { name: 'Fire', type: cardTypes.POWER, effect: 'damage', value: 2, image: '../assets/images/fire.png', description: 'Adds +2 damage to your attack.' },
     WATER: { name: 'Water', type: cardTypes.POWER, effect: 'defense', value: 1, image: '../assets/images/water.png', description: 'Reduces incoming damage by 1 and cancels opponent\'s Fire power-up.' },
     THUNDER: { name: 'Thunder', type: cardTypes.POWER, effect: 'stun', value: null, image: '../assets/images/thunder.png', description: 'If you win the round, your opponent cannot use a Power-Up on their next turn.' }
 };
 
+// Creates the initial deck configuration with a set number of each card.
 const initialDeckConfig = [
     ...Array(5).fill(baseCards.ROCK),
     ...Array(5).fill(baseCards.PAPER),
@@ -27,7 +31,13 @@ const initialDeckConfig = [
 ];
 
 // --- Game Class ---
+// Manages the entire game state and logic.
 class Game {
+    /**
+     * Initializes a new game or loads from a saved state.
+     * @param {string} playerName - The name of the player.
+     * @param {object | null} savedState - The saved game state to load, if any.
+     */
     constructor(playerName, savedState = null) {
         if (savedState) {
             // Load game from saved state
@@ -64,6 +74,10 @@ class Game {
         }
     }
 
+    /**
+     * Returns the current state of the game for saving.
+     * @returns {object} The game state.
+     */
     getGameState() {
         return {
             playerName: this.playerName,
@@ -75,6 +89,10 @@ class Game {
         };
     }
 
+    /**
+     * Sets up the initial game state, including decks and hands.
+     * @private
+     */
     _setupGame() {
         // Setup decks
         this.player.deck = this._shuffle([...initialDeckConfig]);
@@ -91,6 +109,12 @@ class Game {
         this._ensurePlayableHand(this.ai);
     }
 
+    /**
+     * Shuffles a deck using the Fisher-Yates algorithm.
+     * @param {Array} deck - The deck to be shuffled.
+     * @returns {Array} The shuffled deck.
+     * @private
+     */
     _shuffle(deck) {
         // Fisher-Yates shuffle algorithm
         for (let i = deck.length - 1; i > 0; i--) {
@@ -100,6 +124,13 @@ class Game {
         return deck;
     }
 
+    /**
+     * Draws a card from a target's deck to their hand.
+     * @param {object} target - The player or AI to draw a card.
+     * @param {boolean} forceBase - If true, ensures a base card is drawn if possible.
+     * @returns {object | null} The drawn card or null if no card could be drawn.
+     * @private
+     */
     _drawCard(target, forceBase = false) {
         if (target.deck.length === 0) {
             if (target.discard.length === 0) return null; // Nothing to draw or reshuffle
@@ -142,22 +173,31 @@ class Game {
     }
 
     // --- GAMEPLAY & TURN LOGIC ---
+    /**
+     * Executes a single turn of the game.
+     * @param {object} playerMove - The player's chosen move {base, power}.
+     * @returns {object} Data about the turn, including moves and results.
+     */
     playTurn(playerMove) {
         this.turnCount++;
         const aiMove = this._selectMoveGBFS();
         
+        // Record player's move for AI prediction
         if (playerMove.base) {
             this.playerHistory.push(playerMove.base.name);
         }
         
+        // Move played cards from hand to discard pile
         this._moveCardToDiscard(this.player, playerMove.base);
         this._moveCardToDiscard(this.player, playerMove.power);
         this._moveCardToDiscard(this.ai, aiMove.base);
         this._moveCardToDiscard(this.ai, aiMove.power);
 
+        // Determine and apply the outcome of the round
         const result = this._resolveRound(playerMove, aiMove);
         this._applyRoundResult(result, playerMove, aiMove);
 
+        // Check for game over condition
         if (this.player.hp <= 0 || this.ai.hp <= 0) {
             this.isGameOver = true;
         }
@@ -165,6 +205,12 @@ class Game {
         return { playerMove, aiMove, result };
     }
 
+    /**
+     * Moves a card from a target's hand to their discard pile.
+     * @param {object} target - The player or AI.
+     * @param {object} card - The card to move.
+     * @private
+     */
     _moveCardToDiscard(target, card) {
         if (!card) return;
         const index = target.hand.indexOf(card);
@@ -174,24 +220,31 @@ class Game {
         }
     }
 
+    /**
+     * Draws cards for both player and AI to replenish their hands to 5.
+     * @returns {object} Information about any reshuffles that occurred.
+     */
     drawForEndOfTurn() {
         this.player.reshuffled = false;
         this.player.reshuffleReason = null;
         this.ai.reshuffled = false;
         this.ai.reshuffleReason = null;
 
+        // Draw cards for the player
         const playerDrawAmount = 5 - this.player.hand.length;
         for (let i = 0; i < playerDrawAmount; i++) {
             const needsGuaranteedBase = !this.player.hand.some(c => c.type === cardTypes.BASE) && this.player.hand.length === 4;
             this._drawCard(this.player, needsGuaranteedBase);
         }
         
+        // Draw cards for the AI
         const aiDrawAmount = 5 - this.ai.hand.length;
         for (let i = 0; i < aiDrawAmount; i++) {
             const needsGuaranteedBase = !this.ai.hand.some(c => c.type === cardTypes.BASE) && this.ai.hand.length === 4;
             this._drawCard(this.ai, needsGuaranteedBase);
         }
 
+        // Ensure both hands are playable after drawing
         this._ensurePlayableHand(this.player);
         this._ensurePlayableHand(this.ai);
 
@@ -203,12 +256,20 @@ class Game {
         };
     }
 
+    /**
+     * Resolves the round to determine the winner and calculate damage.
+     * @param {object} playerMove - The player's move.
+     * @param {object} aiMove - The AI's move.
+     * @returns {object} The result of the round {winner, playerDamage, aiDamage}.
+     * @private
+     */
     _resolveRound(playerMove, aiMove) {
         const pBase = playerMove.base.name;
         const aBase = aiMove.base.name;
         const pPower = playerMove.power?.name;
         const aPower = aiMove.power?.name;
 
+        // Determine winner based on Rock-Paper-Scissors logic
         let winner = null;
         if ( (pBase === 'Rock' && aBase === 'Scissors') ||
              (pBase === 'Scissors' && aBase === 'Paper') ||
@@ -223,6 +284,7 @@ class Game {
         let playerDamage = 0;
         let aiDamage = 0;
 
+        // Calculate base and power-up damage
         if (winner === 'player') {
             playerDamage = playerMove.base.damage;
             if (pPower === 'Fire' && aPower !== 'Water') playerDamage += powerUps.FIRE.value;
@@ -231,30 +293,47 @@ class Game {
             if (aPower === 'Fire' && pPower !== 'Water') aiDamage += powerUps.FIRE.value;
         }
 
+        // Apply water power-up defense
         if (aPower === 'Water') playerDamage = Math.max(0, playerDamage - powerUps.WATER.value);
         if (pPower === 'Water') aiDamage = Math.max(0, aiDamage - powerUps.WATER.value);
 
         return { winner, playerDamage, aiDamage };
     }
 
+    /**
+     * Applies the result of the round to player and AI stats.
+     * @param {object} result - The result object from _resolveRound.
+     * @param {object} playerMove - The player's move.
+     * @param {object} aiMove - The AI's move.
+     * @private
+     */
     _applyRoundResult(result, playerMove, aiMove) {
         this.player.hp -= result.aiDamage;
         this.ai.hp -= result.playerDamage;
 
+        // Ensure HP doesn't go below zero
         if (this.player.hp < 0) this.player.hp = 0;
         if (this.ai.hp < 0) this.ai.hp = 0;
 
+        // Apply stun effect from Thunder power-up
         this.player.isStunned = (result.winner === 'ai' && aiMove.power?.name === 'Thunder');
         this.ai.isStunned = (result.winner === 'player' && playerMove.power?.name === 'Thunder');
     }
 
+    /**
+     * Ensures a target has at least one base card in hand, reshuffling if necessary.
+     * @param {object} target - The player or AI.
+     * @private
+     */
     _ensurePlayableHand(target) {
         const hasBaseCard = target.hand.some(card => card.type === cardTypes.BASE);
         if (hasBaseCard) return;
 
+        // Check if a base card exists in the deck or discard to be drawn
         const canDrawBase = target.deck.some(c => c.type === 'base') || target.discard.some(c => c.type === 'base');
         if (!canDrawBase) return;
 
+        // Collect all cards, reshuffle, and draw a new hand
         target.discard.push(...target.hand);
         target.hand = [];
         target.discard.push(...target.deck);
@@ -271,7 +350,13 @@ class Game {
     }
 
     // --- GBFS AI IMPLEMENTATION ---
+    /**
+     * Selects the AI's move using a Greedy Best-First Search algorithm.
+     * @returns {object} The selected move {base, power}.
+     * @private
+     */
     _selectMoveGBFS() {
+        // 1. Predict player's next move based on frequency of past moves.
         const counts = this.playerHistory.reduce((acc, move) => {
             acc[move] = (acc[move] || 0) + 1;
             return acc;
@@ -283,11 +368,13 @@ class Game {
         }
         const predictedCard = Object.values(baseCards).find(c => c.name === predictedMoveName);
 
+        // 2. Evaluate all possible moves using a heuristic.
         let bestMove = { move: null, score: -Infinity };
         const aiBaseCards = this.ai.hand.filter(c => c.type === cardTypes.BASE);
         const aiPowerUps = this.ai.hand.filter(c => c.type === cardTypes.POWER);
         
         if (aiBaseCards.length === 0) {
+            // Failsafe if AI has no base cards (should not happen with _ensurePlayableHand).
             return { base: this.ai.hand[0], power: null };
         }
         
@@ -304,24 +391,43 @@ class Game {
             }
         }
         
+        // 3. Greedily select the move with the highest score.
         return bestMove.move;
     }
 
+    /**
+     * Heuristic function to score a potential move.
+     * @param {object} state - The AI's potential move {base, power}.
+     * @param {object} predicted - The player's predicted base card.
+     * @param {number} hpAI - Current HP of the AI.
+     * @param {number} hpPlayer - Current HP of the player.
+     * @returns {number} The heuristic score for the move.
+     * @private
+     */
     _heuristic(state, predicted, hpAI, hpPlayer) {
         let baseDmg = state.base.damage;
         let bonus = 0;
         
+        // Calculate potential damage output
         if (state.power?.name === 'Fire') bonus += 2;
         if (state.power?.name === 'Water') baseDmg -= 1;
 
         const winProb = this._winProb(state.base, predicted);
         const expectedDmg = (baseDmg + bonus) * winProb;
         
+        // Add utility for using Thunder when behind in HP
         const stunUtility = (state.power?.name === 'Thunder' && hpPlayer > hpAI) ? 3 : 0;
         
         return expectedDmg + stunUtility;
     }
 
+    /**
+     * Calculates the probability of winning against the predicted card.
+     * @param {object} aiCard - The AI's base card.
+     * @param {object} predictedCard - The player's predicted base card.
+     * @returns {number} 1 for a win, 0.5 for a tie, 0 for a loss.
+     * @private
+     */
     _winProb(aiCard, predictedCard) {
         const ai = aiCard.name;
         const pred = predictedCard.name;
