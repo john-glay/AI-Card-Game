@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Press+Start+2P&display=swap');
 
+/* --- GLOBAL STYLES --- */
+/* Universal box-sizing and font settings */
 * {
     font-family: "Press Start 2P", system-ui;
     font-size: 18px;
@@ -11,14 +13,17 @@
     -webkit-touch-callout: none; /* iOS Safari */
 }
 
+/* Default anchor tag styling */
 a {
     text-decoration: none;
 }
 
+/* Prevent image dragging */
 img {
     pointer-events: none; /* Prevents dragging and context menu on images */
 }
 
+/* Margin for lists */
 ol {
     margin-left: 20px;
 }
@@ -27,6 +32,7 @@ ul {
     margin-left: 30px;
 }
 
+/* Default button styling */
 button {
     cursor: pointer;
     border: 2px solid black;
@@ -38,6 +44,7 @@ button {
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
+/* Button hover and active states */
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -49,6 +56,7 @@ button:active {
     box-shadow: none;
 }
 
+/* Disabled button state */
 button:disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -56,6 +64,7 @@ button:disabled {
     box-shadow: none;
 }
 
+/* Body styling with animated gradient background */
 body {
     align-items: center;
     background-image: linear-gradient(to right, #FFA049, #FF4F63, #FFA049, #FF4F63);
@@ -65,11 +74,13 @@ body {
     animation: animated-gradient 15s ease-in-out infinite;
 }
 
+/* General container for centering content */
 .container {
     max-width: 1152px;
     margin: auto;
 }
 
+/* Base style for card-like containers */
 .base {
     background-image: linear-gradient(to top, #FFA049, #FF4F63);
     border: 10px solid black;
@@ -77,7 +88,7 @@ body {
     padding: 30px;
 }
 
-/* MAIN MENU PAGE */
+/* --- MAIN MENU PAGE --- */
 .menu {
     align-items: center;
     display: flex;
@@ -116,7 +127,7 @@ body {
     animation: float 6s ease-in-out infinite;
 }
 
-/* RULES PAGE */
+/* --- RULES PAGE --- */
 .rules h1 {
     font-size: 30px;
     margin-bottom: 30px;
@@ -143,7 +154,7 @@ body {
     gap: 30px;
 }
 
-/* CARDS PAGE */
+/* --- CARDS PAGE --- */
 .cards h1 {
     font-size: 30px;
     margin-bottom: 30px;
@@ -166,7 +177,8 @@ body {
     display: block;
 }
 
-/* GAMEPLAY PAGE */
+/* --- GAMEPLAY PAGE --- */
+/* Top-level containers for AI, Game, and Player areas */
 .ai-container {
     box-shadow: 0 0px 10px 0 rgba(0, 0, 0, 0.2), 0 0px 20px 0 rgba(0, 0, 0, 0.2);
     width: 100%;
@@ -187,6 +199,7 @@ body {
     width: 100%;
 }
 
+/* Padding and positioning for gameplay containers */
 .ai-container .container,
 .player-container .container {
     padding: 20px;
@@ -200,6 +213,7 @@ body {
     justify-content: space-between;
 }
 
+/* Player and AI name display */
 .ai-container .name,
 .player-container .name {
     font-size: 30px;
@@ -214,6 +228,7 @@ body {
     text-align: right;
 }
 
+/* Health points bar and text styling */
 .health-points {
     align-items: center;
     display: flex;
@@ -226,6 +241,7 @@ body {
     font-size: 30px;
 }
 
+/* Progress bar for HP */
 .progress {
     accent-color: #FF5733;
     width: 300px;
@@ -238,6 +254,7 @@ body {
     overflow: hidden;
 }
 
+/* Progress bar styling for Webkit and Mozilla */
 .progress::-webkit-progress-value {
     background-color: #FF5733;
     transition: width 0.4s ease-out, background-color 0.1s linear;
@@ -252,6 +269,7 @@ body {
     transition: width 0.4s ease-out, background-color 0.1s linear;
 }
 
+/* Deck stack and count styling */
 .stack-container {
     position: absolute;
     margin: 20px;
@@ -289,6 +307,7 @@ body {
     padding-bottom: 20px;
 }
 
+/* AI and Player hand containers */
 .ai-container .card-back,
 .player-container .play-cards {
     align-items: center;
@@ -297,6 +316,7 @@ body {
     min-height: 200px;
 }
 
+/* Card image styling */
 .ai-container .card-back img,
 .player-container .play-cards button img,
 .game-container .gameplay img {
@@ -304,6 +324,7 @@ body {
     will-change: transform, opacity;
 }
 
+/* Animation for AI's face-down cards */
 .ai-container .card-back img {
     animation: gentle-float 6s ease-in-out infinite;
 }
@@ -313,6 +334,7 @@ body {
 .ai-container .card-back img:nth-child(4) { animation-delay: 1.4s; }
 .ai-container .card-back img:nth-child(5) { animation-delay: 1.8s; }
 
+/* Player's card button styling */
 .player-container .play-cards button {
     border: none;
     margin: 0;
@@ -321,6 +343,7 @@ body {
     background: transparent;
 }
 
+/* Container for each player card, including info button */
 .player-card-container {
     position: relative;
     display: flex;
@@ -330,10 +353,12 @@ body {
     padding: 0 5px;
 }
 
+/* Animation for player's cards */
 .player-card-container > button:first-of-type {
     animation: gentle-float 6s ease-in-out infinite;
 }
 
+/* Staggered animation delays for player cards */
 .player-container .card-row:first-child .player-card-container:nth-child(1) > button:first-of-type {
     animation-delay: 0s;
 }
@@ -350,6 +375,7 @@ body {
     animation-delay: 1.6s;
 }
 
+/* Styling for selected player card */
 .player-card-container.selected {
     transform: translateY(-10px);
 }
@@ -364,6 +390,7 @@ body {
     border-radius: 16px;
 }
 
+/* Card info button styling (appears on selection) */
 .info-button {
     display: none;
     position: absolute;
@@ -394,6 +421,7 @@ body {
     box-shadow: none;
 }
 
+/* Central gameplay area (card slots) */
 .game-container .gameplay {
     position: relative;
     display: flex;
@@ -401,6 +429,7 @@ body {
     gap: 20px;
 }
 
+/* Layout for game controls */
 .button-controls {
     display: contents;
 }
@@ -421,7 +450,7 @@ body {
     display: block;
 }
 
-/* SETTINGS MODAL & TOGGLE SWITCH */
+/* --- SETTINGS MODAL & TOGGLE SWITCH --- */
 .settings-container {
     display: flex;
     flex-direction: column;
@@ -443,6 +472,7 @@ body {
     white-space: nowrap;
 }
 
+/* Volume slider styling */
 .volume-slider {
     -webkit-appearance: none;
     width: 50%;
@@ -477,6 +507,7 @@ body {
     cursor: pointer;
 }
 
+/* Dark mode toggle switch styling */
 .switch {
     position: relative;
     display: inline-block;
@@ -532,7 +563,8 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* MODAL */
+/* --- MODAL STYLES --- */
+/* Base modal container (overlay) */
 .modal {
     display: flex;
     position: fixed;
@@ -549,11 +581,13 @@ input:checked + .slider:before {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+/* Modal visibility state */
 .modal.visible {
     opacity: 1;
     visibility: visible;
 }
 
+/* Modal content box styling */
 .modal-content {
     background-image: linear-gradient(to top, #FFA049, #FF4F63);
     padding: 50px 30px;
@@ -591,11 +625,13 @@ input:checked + .slider:before {
     align-items: center;
 }
 
+/* Specific styling for the scrollable 'How to Play' modal */
 #howToPlayModal .modal-content {
     max-height: 80vh;
     overflow-y: auto;
 }
 
+/* Tab navigation inside modals */
 .modal-tabs {
     display: flex;
     border-bottom: 2px solid black;
@@ -627,6 +663,7 @@ input:checked + .slider:before {
     filter: none;
 }
 
+/* Tab content visibility */
 .tab-content {
     display: none;
 }
@@ -636,6 +673,7 @@ input:checked + .slider:before {
     animation: slideUpFadeIn 0.5s ease-in-out;
 }
 
+/* Modal close button styling */
 .close-btn {
     cursor: pointer;
 }
@@ -649,7 +687,7 @@ input:checked + .slider:before {
     font-family: "Poppins", sans-serif;
 }
 
-/* RESPONSIVE LAYOUT */
+/* --- RESPONSIVE LAYOUT (Media Queries) --- */
 @media (max-width: 1200px) {
     .container {
         max-width: 992px;
@@ -928,6 +966,7 @@ input:checked + .slider:before {
     }
 }
 
+/* --- OVERLAYS & MESSAGES --- */
 #battle-focus-overlay {
     display: none;
     position: fixed;
@@ -982,6 +1021,7 @@ input:checked + .slider:before {
     display: none;
 }
 
+/* Card image styling within the info modal */
 #info-modal-img {
     height: 250px;
     border-radius: 16px;
@@ -989,6 +1029,7 @@ input:checked + .slider:before {
     background-color: white;
 }
 
+/* Player hand container layout */
 .player-container .play-cards {
     align-items: center;
     display: flex;
@@ -996,6 +1037,7 @@ input:checked + .slider:before {
     min-height: 200px;
 }
 
+/* Row layout for player cards */
 .card-row {
     display: flex;
     justify-content: center;
@@ -1003,7 +1045,7 @@ input:checked + .slider:before {
     gap: 5px;
 }
 
-/* DARK MODE THEME */
+/* --- DARK MODE THEME --- */
 body.dark-mode {
     background-image: linear-gradient(to bottom, #485563, #29323c);
 }
@@ -1087,7 +1129,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     background: #6DFF74;
 }
 
-/* ANIMATIONS */
+/* --- ANIMATIONS (Keyframes) --- */
 @keyframes animated-gradient {
     0% {
         background-position: 0% 50%;
@@ -1182,6 +1224,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     }
 }
 
+/* Animation classes for dynamic effects */
 .hp-damage {
     animation: shake 0.6s cubic-bezier(.36,.07,.19,.97);
 }
@@ -1219,7 +1262,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     }
 }
 
-/* --- HOW TO PLAY MODAL REFINEMENTS --- */
+/* --- 'HOW TO PLAY' MODAL REFINEMENTS --- */
 #howToPlayModal h1, #howToPlayModal h2 {
     color: #962bc0; 
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
@@ -1288,7 +1331,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     font-weight: bold;
 }
 
-/* Card Library Styles */
+/* --- CARD LIBRARY STYLES (in Modal) --- */
 #cards-tab .card-info-container {
     display: flex;
     flex-direction: column;
@@ -1337,7 +1380,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     margin: 25px 0;
 }
 
-/* Card View Modal styles */
+/* --- CARD VIEW MODAL (Zoomed Card) --- */
 .card-view-content {
     background: transparent !important;
     border: none !important;
@@ -1364,6 +1407,7 @@ body.dark-mode .volume-slider::-moz-range-thumb {
     transform: none !important;
 }
 
+/* --- DARK MODE OVERRIDES --- */
 body.dark-mode .modal-content h1, 
 body.dark-mode .modal-content label {
     color: #E0E0E0;
@@ -1434,6 +1478,7 @@ body.dark-mode #reshuffle-message {
     border-color: #E0E0E0;
 }
 
+/* --- BATTLE ANIMATION STYLES --- */
 @keyframes swing-player {
     0%, 100% { transform: rotate(0deg); }
     50% { transform: rotate(8deg); }
@@ -1454,6 +1499,7 @@ body.dark-mode #reshuffle-message {
     transform-origin: bottom center;
 }
 
+/* 'Bato Bato Pick' text during clash */
 #clash-text {
     position: absolute;
     left: 50%;
@@ -1485,6 +1531,7 @@ body.dark-mode #reshuffle-message {
     animation: text-pop 0.3s ease-out forwards;
 }
 
+/* Card flip animation */
 @keyframes card-flip {
     0% {
         transform: scaleX(1);
@@ -1501,7 +1548,7 @@ body.dark-mode #reshuffle-message {
     animation: card-flip 0.4s ease-in-out;
 }
 
-/* --- Round Result Animations --- */
+/* --- ROUND RESULT ANIMATIONS --- */
 @keyframes card-win-glow {
     0% {
         transform: scale(1);
